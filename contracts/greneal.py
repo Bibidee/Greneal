@@ -1,4 +1,4 @@
-# v0.1.1
+# v0.1.2
 # { "Depends": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6" }
 """Greneal: a semantic change-control firewall for governed resources."""
 
@@ -102,6 +102,10 @@ def clean(value: str) -> str:
     return " ".join(str(value).replace("\x00", " ").split())
 
 
+def address(value) -> Address:
+    return value if isinstance(value, Address) else Address(value)
+
+
 def timestamp() -> int:
     try:
         raw = str(gl.message.raw.datetime)
@@ -194,7 +198,7 @@ class Greneal(gl.Contract):
     changes: TreeMap[str, Change]
 
     def __init__(self, owner_address: str = ""):
-        self.owner = owner_address if isinstance(owner_address, Address) else Address(owner_address) if owner_address else gl.message.sender_address
+        self.owner = address(owner_address) if owner_address else gl.message.sender_address
         self.paused = False; self.boundary_count = u256(0); self.change_count = u256(0)
 
     def _boundary(self, boundary_id: str) -> Boundary:
@@ -226,8 +230,9 @@ class Greneal(gl.Contract):
         boundary_id = identifier(boundary_id, "boundary_id")
         if self.boundaries.get(boundary_id) is not None or int(self.boundary_count) >= MAX_BOUNDARIES: raise gl.vm.UserError(f"{EXPECTED} Boundary unavailable")
         if int(challenge_bond) <= 0 or int(challenge_window) < MIN_WINDOW or int(challenge_window) > MAX_WINDOW: raise gl.vm.UserError(f"{EXPECTED} Invalid challenge configuration")
-        self.boundaries[boundary_id] = Boundary(boundary_id, self.owner, Address(maintainer), text(resource_id, "resource_id", 180), text(safety_policy, "safety_policy"), url(baseline_url, "baseline_url"), challenge_bond, challenge_window, ACTIVE, u256(timestamp()))
-        self.boundary_count = u256(int(self.boundary_count) + 1); BoundaryCreated(boundary_id, Address(maintainer)).emit()
+        maintainer_address = address(maintainer)
+        self.boundaries[boundary_id] = Boundary(boundary_id, self.owner, maintainer_address, text(resource_id, "resource_id", 180), text(safety_policy, "safety_policy"), url(baseline_url, "baseline_url"), challenge_bond, challenge_window, ACTIVE, u256(timestamp()))
+        self.boundary_count = u256(int(self.boundary_count) + 1); BoundaryCreated(boundary_id, maintainer_address).emit()
 
     @gl.public.write
     def set_boundary_status(self, boundary_id: str, status: str) -> None:
@@ -328,4 +333,4 @@ class Greneal(gl.Contract):
 
     @gl.public.view
     def get_info(self) -> dict:
-        return {"name": "Greneal", "version": "0.1.1", "owner": self.owner.as_hex, "paused": self.paused, "boundary_count": int(self.boundary_count), "change_count": int(self.change_count)}
+        return {"name": "Greneal", "version": "0.1.2", "owner": self.owner.as_hex, "paused": self.paused, "boundary_count": int(self.boundary_count), "change_count": int(self.change_count)}

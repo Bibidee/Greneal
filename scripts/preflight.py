@@ -15,7 +15,7 @@ ast.parse(source)
 required = [
     "class Greneal", "run_nondet_unsafe", "equivalent", "valid_analysis",
     "settle_expired_challenge", "challenge_bond_held", "challenged_at",
-    "is_actionable", "payload_binding", "MIN_CONFIDENCE = 75",
+    "is_actionable", "payload_binding", "MIN_CONFIDENCE = 75", "def address(value)",
 ]
 missing = [item for item in required if item not in source]
 if missing:
