@@ -1,4 +1,4 @@
-# v0.1.2
+# v0.1.3
 # { "Depends": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6" }
 """Greneal: a semantic change-control firewall for governed resources."""
 
@@ -104,6 +104,18 @@ def clean(value: str) -> str:
 
 def address(value) -> Address:
     return value if isinstance(value, Address) else Address(value)
+
+
+def canonical_hash(value) -> str:
+    if isinstance(value, str):
+        result = value.strip().lower()
+    else:
+        try:
+            result = f"0x{int(value):064x}"
+        except (TypeError, ValueError, OverflowError):
+            raise gl.vm.UserError(f"{EXPECTED} Invalid payload hash")
+    if not re.match(r"^0x[0-9a-f]{64}$", result): raise gl.vm.UserError(f"{EXPECTED} Invalid payload hash")
+    return result
 
 
 def timestamp() -> int:
@@ -248,8 +260,7 @@ class Greneal(gl.Contract):
         self._active(); change_id = identifier(change_id, "change_id")
         boundary = self._boundary(boundary_id)
         if boundary.status != ACTIVE or gl.message.sender_address != boundary.maintainer: raise gl.vm.UserError(f"{EXPECTED} Maintainer and active boundary required")
-        payload_hash = str(payload_hash).strip().lower()
-        if not re.match(r"^0x[0-9a-f]{64}$", payload_hash): raise gl.vm.UserError(f"{EXPECTED} Invalid payload hash")
+        payload_hash = canonical_hash(payload_hash)
         if self.changes.get(change_id) is not None or int(self.change_count) >= MAX_CHANGES: raise gl.vm.UserError(f"{EXPECTED} Change unavailable")
         zero = Address("0x0000000000000000000000000000000000000000")
         self.changes[change_id] = Change(change_id, boundary_id, gl.message.sender_address, payload_hash, url(evidence_url, "evidence_url"), text(summary, "summary", 400), PROPOSED, "", "unclear", "unclear", "unclear", "unclear", "unclear", "unclear", u256(0), "", u256(timestamp()), u256(0), u256(0), u256(0), zero, u256(0))
@@ -333,4 +344,4 @@ class Greneal(gl.Contract):
 
     @gl.public.view
     def get_info(self) -> dict:
-        return {"name": "Greneal", "version": "0.1.2", "owner": self.owner.as_hex, "paused": self.paused, "boundary_count": int(self.boundary_count), "change_count": int(self.change_count)}
+        return {"name": "Greneal", "version": "0.1.3", "owner": self.owner.as_hex, "paused": self.paused, "boundary_count": int(self.boundary_count), "change_count": int(self.change_count)}

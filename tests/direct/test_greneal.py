@@ -80,6 +80,12 @@ def test_invalid_inputs_and_duplicate_ids_are_rejected(direct_vm, direct_deploy)
         propose(direct_vm, contract)
 
 
+def test_numeric_cli_hash_is_normalized_to_the_same_commitment(direct_vm, direct_deploy):
+    contract = deploy(direct_vm, direct_deploy); create(contract)
+    contract.propose_change("numeric-hash", "boundary-1", int(PAYLOAD, 16), "https://example.com/change", "CLI-compatible numeric hash")
+    assert contract.get_change("numeric-hash")["payload_hash"] == PAYLOAD
+
+
 def test_pause_and_boundary_transitions_block_new_work(direct_vm, direct_deploy, direct_alice):
     contract = deploy(direct_vm, direct_deploy); create(contract)
     with direct_vm.prank(direct_alice):
