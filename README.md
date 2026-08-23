@@ -1,6 +1,6 @@
 # Greneal
 
-Greneal is a standalone GenLayer semantic change-control firewall. It lets a system owner register an immutable safety boundary for a governed resource, then allows maintainers to propose a change only when deterministic rules and independent GenLayer consensus agree that the change stays inside that boundary. Version 0.2.3 fixes live GenVM web-response compatibility while preserving the v0.2.2 state invariants; older Studionet deployments are legacy.
+Greneal is a standalone GenLayer semantic change-control firewall. It lets a system owner register an immutable safety boundary for a governed resource, then allows maintainers to propose a change only when deterministic rules and independent GenLayer consensus agree that the change stays inside that boundary. Version 0.3.0 is the current hardened release: it preserves the v0.2.x state invariants, uses the live-compatible GenLayer web response API, and rejects oversized artefacts rather than semantically truncating committed content. Older Studionet deployments are legacy.
 
 | Current release | Canonical Studionet deployment |
 | --- | --- |
@@ -22,7 +22,7 @@ Greneal is not a thin “AI decides X” wrapper. It separates deterministic enf
 2. the boundary commits its baseline URL and digest, while every proposal commits payload and evidence URLs and digests;
 3. validators independently fetch all three artefacts, verify SHA-256 over the exact raw bytes, and only then perform semantic review;
 4. deterministic contract logic validates the structured result and enforces verdict, challenge, bond, timeout, and actionability transitions;
-5. downstream systems receive the committed payload hash and must verify the payload they execute against it.
+5. downstream systems receive the committed payload hash and must verify the exact raw payload bytes they execute with SHA-256 against that commitment.
 
 ## Lint and submission policy
 
@@ -58,7 +58,7 @@ Explorer source was retrieved after finalization. Local and deployed source SHA-
 
 Live artefacts are commit-pinned to repository commit `30958818d9d18cc2cfc8cb23216f25a82a78d442`. The baseline digest is `642c1f9f12720e6e7e08a9dfd412bdcb7c4a6367394f24d12d0aab3fd56b9324`; the safe payload digest is `f104fdf07e2abc1394e2fff27a507af7d9f3edee342e7b559752af4d8534be50`; the safe evidence digest is `f7ca797ab87920f22c3ef86bc580631ceda521cd180a4a41d76bc6ed603efc3b`; and the risky payload/evidence digest is `9aec9c169b2d4e33ecad2c2edb4f92cf22b0cf7a92ebc04d30b3b159d1aed000`.
 
-### Live Studionet Validation
+### Legacy v0.2.3 live validation
 
 | Path | Verified live result |
 | --- | --- |
@@ -92,7 +92,7 @@ Live artefacts are commit-pinned to repository commit `30958818d9d18cc2cfc8cb232
 | Expected post-slash timeout rejection | [`0x0bfb…a9ee1`](https://explorer-studio.genlayer.com/tx/0x0bfb67a860b17af959e70f70c64c4e1f7ae00a82fcf91a4e7ac6efa5e47a9ee1) | Finalized rollback; no second settlement |
 | Expected post-slash withdrawal rejection | [`0x07bd…32320`](https://explorer-studio.genlayer.com/tx/0x07bdbbc6ff4df8425fd7fe2dd666015816931dc9f090a67b989ab28f1bf32320) | Finalized rollback; no refund after slashing |
 
-The safe path became actionable only after its configured 60-second delay elapsed. The risky path remained non-actionable. Both challenged proposals were non-actionable while their bonds were unresolved. The two challenge paths prove timeout refund/withdrawal and successful re-review/slashing, with held accounting returning to zero in each terminal outcome.
+The legacy v0.2.3 safe path became actionable only after its configured 60-second delay elapsed. The risky path remained non-actionable. Both challenged proposals were non-actionable while their bonds were unresolved. The two challenge paths prove timeout refund/withdrawal and successful re-review/slashing, with held accounting returning to zero in each terminal outcome.
 
 ## Release validation
 
