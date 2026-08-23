@@ -301,21 +301,20 @@ class Greneal(gl.Contract):
         if change.status != REVIEWED or change.verdict != APPROVED or timestamp() < int(change.reviewed_at) + int(boundary.challenge_window): raise gl.vm.UserError(f"{EXPECTED} Change is not actionable")
         change.status = CONSUMED
 
+    @gl.public.write
+    def cancel_change(self, change_id: str) -> None:
+        change = self._change(change_id); boundary = self._boundary(str(change.boundary_id))
+        if gl.message.sender_address != change.proposer and gl.message.sender_address != boundary.owner:
+            raise gl.vm.UserError(f"{EXPECTED} Proposer or owner only")
+        if change.status == CONSUMED or int(change.challenge_bond_held) != 0:
+            raise gl.vm.UserError(f"{EXPECTED} Change cannot be cancelled")
+        change.status, change.verdict = CANCELLED, ""
+
     @gl.public.view
     def is_actionable(self, change_id: str) -> dict:
         change = self._change(change_id); boundary = self._boundary(str(change.boundary_id))
         ready = not self.paused and boundary.status == ACTIVE and change.status == REVIEWED and change.verdict == APPROVED and timestamp() >= int(change.reviewed_at) + int(boundary.challenge_window)
         return {"change_id": str(change.id), "boundary_id": str(change.boundary_id), "actionable": ready, "resource_id": str(boundary.resource_id), "payload_hash": str(change.payload_hash), "verdict": str(change.verdict), "status": str(change.status)}
-
-    @gl.public.view
-    def get_boundary(self, boundary_id: str) -> dict:
-        value = self._boundary(boundary_id)
-        return {"id": str(value.id), "owner": str(value.owner), "maintainer": str(value.maintainer), "resource_id": str(value.resource_id), "safety_policy": str(value.safety_policy), "baseline_url": str(value.baseline_url), "challenge_bond": str(value.challenge_bond), "challenge_window": int(value.challenge_window), "status": str(value.status), "created_at": int(value.created_at)}
-
-    @gl.public.view
-    def get_change(self, change_id: str) -> dict:
-        value = self._change(change_id)
-        return {"id": str(value.id), "boundary_id": str(value.boundary_id), "proposer": str(value.proposer), "payload_hash": str(value.payload_hash), "evidence_url": str(value.evidence_url), "summary": str(value.summary), "status": str(value.status), "verdict": str(value.verdict), "scope_preserved": str(value.scope_preserved), "access_expansion": str(value.access_expansion), "economic_risk": str(value.economic_risk), "reversibility": str(value.reversibility), "compatibility": str(value.compatibility), "payload_binding": str(value.payload_binding), "confidence": int(value.confidence), "rationale": str(value.rationale), "proposed_at": int(value.proposed_at), "reviewed_at": int(value.reviewed_at), "challenged_at": int(value.challenged_at), "challenge_count": int(value.challenge_count), "challenger": str(value.challenger), "challenge_bond_held": str(value.challenge_bond_held)}
 
     @gl.public.view
     def get_boundary(self, boundary_id: str) -> dict:
