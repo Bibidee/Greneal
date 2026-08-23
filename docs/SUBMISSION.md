@@ -4,21 +4,23 @@
 
 **Current version:** v0.3.0
 
-**Current contract:** [`0x60797a1368C093DB8609Ca301c0d13fC81f5a239`](https://explorer-studio.genlayer.com/address/0x60797a1368C093DB8609Ca301c0d13fC81f5a239)
+**Current contract:** [`0xFa8bfa84889c347201A6D37026A45d65429827cE`](https://explorer-studio.genlayer.com/address/0xFa8bfa84889c347201A6D37026A45d65429827cE)
 
-**Deployment:** [`0x76c9c4d24e949483a8d025af6c1cb2fc467541cd764184d57c4714a7aab2aa78`](https://explorer-studio.genlayer.com/tx/0x76c9c4d24e949483a8d025af6c1cb2fc467541cd764184d57c4714a7aab2aa78)
+**Deployment:** [`0x046de466f0ba0402c6c5c4758dcb07643f26f9e48387bb3eb330cf2467bf0573`](https://explorer-studio.genlayer.com/tx/0x046de466f0ba0402c6c5c4758dcb07643f26f9e48387bb3eb330cf2467bf0573)
 
-**Source commit:** [`93e53d7`](https://github.com/Bibidee/Greneal/commit/93e53d7)
+**Source commit:** [`09ef7cc`](https://github.com/Bibidee/Greneal/commit/09ef7cc)
 
-**Source SHA-256:** `6a7d3f721dc53e7616bccb83b2450f9bee6cce8e29862787ee0cebdc2f5e26a6` (exact deployed/local parity)
+**Source SHA-256:** `6f6540edbd80341c0abd694c5512a2b2e4990d9ed50165798e29fc5990e467c2` (exact deployed/local parity)
 
 ## Fresh v0.3.0 live proof
 
-- Safe review: [`APPROVED`](https://explorer-studio.genlayer.com/tx/0x792d5203ce3fe1d5e38814a29c1ed157d275d21740092fe5461037d3ad0d33dc).
-- Risky review: [`BLOCKED`](https://explorer-studio.genlayer.com/tx/0x4494022dabed4da0c48740237c545e27077d3628109c0f3b30063068bd5de70e).
-- Integrity mismatch: [review rolled back](https://explorer-studio.genlayer.com/tx/0x8d65b51abac395e2dbb11ec43bebfc3f1a99ea98e99df94608ad401dcf69b80a) with proposal unchanged.
-- Bonded challenge: [`0xbd63a649…`](https://explorer-studio.genlayer.com/tx/0xbd63a6495cc208c08b9c1a5b90083d82d6e395df30a1b5d5b5a58a9848f4c227).
-- Successful approved re-review/slash: [`0x3641b21c…`](https://explorer-studio.genlayer.com/tx/0x3641b21cd0596b735de87bba39a3097f3d955a9076159f7e49e09139c52690f8), held bond zero.
+- Safe review: [`APPROVED`](https://explorer-studio.genlayer.com/tx/0x6731b6bd5b928359a0f66990472a9c52b35c0416ae3d29d3f33f4d5c87c4f3e8); early actionability false, delayed actionability true.
+- Risky review: [`BLOCKED`](https://explorer-studio.genlayer.com/tx/0x64cb2273f92960705fe35034265d048400c3778ae9902fe5392d5ceba36bd29d).
+- Integrity mismatch: [deterministic integrity rollback](https://explorer-studio.genlayer.com/tx/0x5e161bf900d032fc5d1e709dde72dfa3b752f26953ca97625215b0122da7f31c) with proposal unchanged.
+- Approved re-review: [challenge](https://explorer-studio.genlayer.com/tx/0x0ce6a02a99a585c54ef4ff7446dd4449e2ff29f68016573839e4262c346f3dfd), [approved re-review/slash](https://explorer-studio.genlayer.com/tx/0x1e6c519c2cefb39da045cbe2b80e86b0e854b000c869fa77427730b2b573e93d), held bond zero and fresh delay enforced.
+- Timeout/refund: [challenge](https://explorer-studio.genlayer.com/tx/0xb07e137c1bdb4fbc3fc8f59f905efa2b691a50b765d394c485a6cdc06de2c614), [public settlement](https://explorer-studio.genlayer.com/tx/0x54700b9c61b627895aad3f949228306549a46045c10960dcde4796ea3664a8db), and [withdrawal](https://explorer-studio.genlayer.com/tx/0xeccf05eab4977c024f83fb3ee90eca80fb220fc7c00b07cf419f9e24ca619cf5).
+- Double settlement rejected: post-slash [timeout](https://explorer-studio.genlayer.com/tx/0x568972f43abb94d5048d23bde9186d1fd7286f24a99a2cdce67d9c899fc0107b) and [withdrawal](https://explorer-studio.genlayer.com/tx/0x63ddc4123366d5cf6f9cc7b81bfa202cd8d9910a4501e44c8a03b037cde36def); post-refund second [withdrawal](https://explorer-studio.genlayer.com/tx/0x415aea9120e0f7c63e73a2dd9dcae9759ddd723b9af03b1dd3ef1eb2f4c7663f) and [settlement](https://explorer-studio.genlayer.com/tx/0xd58bc7c9bbf115e5f2f5cd3651dec14b2541e97fbf3da01a77981442d3905425) all reverted.
+- [Late challenge](https://explorer-studio.genlayer.com/tx/0x2d29335786f0d99dd443a9c123c425943dff7d413f63f231cd835a72525d5198) reverted after finalization.
 
 ## Purpose
 

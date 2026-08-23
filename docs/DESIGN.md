@@ -34,7 +34,7 @@ A proposal can instead be blocked, inconclusive, cancelled, or challenged for on
 
 ## Integration
 
-Greneal is an authorization signal, not an executor. Before acting, an integrator must check `is_actionable`, verify the resource identifier, and compute SHA-256 over the exact raw payload bytes in the same representation that was committed. The resulting lowercase `0x`-prefixed 32-byte digest must equal the proposal's committed `payload_hash`. Integrators must not use `keccak256` for this comparison.
+Greneal is an authorization signal, not an executor. Before acting, an integrator must check `is_actionable`, verify the resource identifier, and compute SHA-256 over the exact raw payload bytes in the same representation that was committed. The resulting lowercase `0x`-prefixed 32-byte digest must equal the proposal's committed `payload_hash`.
 
 ## Threat model
 

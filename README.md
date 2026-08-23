@@ -5,10 +5,10 @@ Greneal is a standalone GenLayer semantic change-control firewall. It lets a sys
 | Current release | Canonical Studionet deployment |
 | --- | --- |
 | Version | `v0.3.0` |
-| Contract | [`0x60797a1368C093DB8609Ca301c0d13fC81f5a239`](https://explorer-studio.genlayer.com/address/0x60797a1368C093DB8609Ca301c0d13fC81f5a239) |
-| Deployment tx | [`0x76c9c4d24e949483a8d025af6c1cb2fc467541cd764184d57c4714a7aab2aa78`](https://explorer-studio.genlayer.com/tx/0x76c9c4d24e949483a8d025af6c1cb2fc467541cd764184d57c4714a7aab2aa78) |
-| Source commit | [`93e53d7`](https://github.com/Bibidee/Greneal/commit/93e53d7) |
-| Source SHA-256 | `6a7d3f721dc53e7616bccb83b2450f9bee6cce8e29862787ee0cebdc2f5e26a6` (exact deployed/local parity) |
+| Contract | [`0xFa8bfa84889c347201A6D37026A45d65429827cE`](https://explorer-studio.genlayer.com/address/0xFa8bfa84889c347201A6D37026A45d65429827cE) |
+| Deployment tx | [`0x046de466f0ba0402c6c5c4758dcb07643f26f9e48387bb3eb330cf2467bf0573`](https://explorer-studio.genlayer.com/tx/0x046de466f0ba0402c6c5c4758dcb07643f26f9e48387bb3eb330cf2467bf0573) |
+| Source commit | [`09ef7cc`](https://github.com/Bibidee/Greneal/commit/09ef7cc) |
+| Source SHA-256 | `6f6540edbd80341c0abd694c5512a2b2e4990d9ed50165798e29fc5990e467c2` (exact deployed/local parity) |
 
 There is no frontend and no off-chain decision service. The only deployable source is `contracts/greneal.py`.
 
