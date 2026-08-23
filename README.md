@@ -1,6 +1,6 @@
 # Greneal
 
-Greneal is a standalone GenLayer semantic change-control firewall. It lets a system owner register an immutable safety boundary for a governed resource, then allows maintainers to propose a change only when deterministic rules and independent GenLayer consensus agree that the change stays inside that boundary. Version 0.2 is a material source change; the currently recorded Studionet v0.1.3 deployment does not contain these hardening changes.
+Greneal is a standalone GenLayer semantic change-control firewall. It lets a system owner register an immutable safety boundary for a governed resource, then allows maintainers to propose a change only when deterministic rules and independent GenLayer consensus agree that the change stays inside that boundary. Version 0.2.1 is a material source change; the currently recorded Studionet v0.1.3 deployment does not contain these hardening changes.
 
 There is no frontend and no off-chain decision service. The only deployable source is `contracts/greneal.py`.
 
@@ -24,9 +24,9 @@ Greneal separates deterministic enforcement from semantic review:
 
 The boundary commits a baseline URL and SHA-256 hash. A proposal commits three immutable artefacts: payload URL/hash, evidence URL/hash, and the boundary's baseline URL/hash. Every validator fetches raw content and programmatically verifies SHA-256 before semantic interpretation. A mismatch, empty response, malformed model result, or unavailable source fails closed and leaves the proposal retryable; an LLM cannot assert payload binding.
 
-Approved changes have an open challenge window. Up to eight unique challengers can post the exact bond; one early challenge cannot use up everyone else's rights. Any open challenge makes the proposal non-actionable. After the window, a re-review either slashes the aggregate bond pool after approval or opens individual one-time refunds after a blocked/inconclusive result. A second deadline permits anyone to settle a stalled round into refunds. `is_actionable()` guarantees a change is reviewed, approved, unchallenged, past its window, and not paused/closed; downstream systems must still verify the returned resource ID and committed payload hash before execution.
+Approved changes have an open challenge window. The first exact-bond challenge opens one forced public re-review round; later objections need no slot because the proposal is already non-actionable and cannot bypass that round. After the window, anyone may re-review. Approval sends the single bond to a neutral sink, never the maintainer; blocked/inconclusive re-review lets the triggering challenger withdraw once. A second deadline permits anyone to settle a stalled round into that refund state. `is_actionable()` explicitly requires an active boundary, unpaused contract, reviewed approval, no active challenge, no held bond, and the finalization delay. Review artefacts are textual UTF-8: SHA-256 is calculated over raw fetched bytes first, then only verified bytes are decoded for semantic review.
 
-Deployment capacity is deliberately finite: 128 boundaries, 1,024 changes, and eight challengers per challenge round. Audit history is retained rather than deleted.
+Deployment capacity is deliberately finite: 128 boundaries and 1,024 changes. Audit history is retained rather than deleted.
 
 ## Studionet deployment evidence
 

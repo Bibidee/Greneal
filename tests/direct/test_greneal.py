@@ -139,7 +139,7 @@ def test_challenge_requires_exact_bond_and_is_single_use(direct_vm, direct_deplo
         contract.challenge_change("change-1")
     direct_vm.value = BOND; contract.challenge_change("change-1"); direct_vm.value = 0
     warp_to(direct_vm, "2026-08-23T08:01:01Z"); mock_review(direct_vm); contract.review_change("change-1")
-    with direct_vm.expect_revert("Exact challenge bond"):
+    with direct_vm.expect_revert("cannot be challenged"):
         contract.challenge_change("change-1")
 
 
@@ -194,20 +194,63 @@ def test_confidence_threshold_is_deterministic(direct_vm, direct_deploy, score, 
     assert contract.get_change("change-1")["verdict"] == expected
 
 
-def test_multiple_challengers_cannot_be_monopolized(direct_vm, direct_deploy, direct_alice, direct_bob):
+def test_sybil_wallets_cannot_monopolize_challenge_protection(direct_vm, direct_deploy, direct_alice, direct_bob, direct_charlie):
     contract = deploy(direct_vm, direct_deploy); create(contract); propose(direct_vm, contract); mock_review(direct_vm); contract.review_change("change-1")
     direct_vm.value = BOND
     with direct_vm.prank(direct_alice): contract.challenge_change("change-1")
-    with direct_vm.prank(direct_bob): contract.challenge_change("change-1")
-    with direct_vm.prank(direct_alice):
-        with direct_vm.expect_revert("Duplicate or full"):
+    for attacker in (direct_bob, direct_charlie):
+        with direct_vm.prank(attacker):
+            with direct_vm.expect_revert("cannot be challenged"):
+                contract.challenge_change("change-1")
+    with direct_vm.prank(direct_bob):
+        with direct_vm.expect_revert("cannot be challenged"):
             contract.challenge_change("change-1")
     direct_vm.value = 0
     row = contract.get_change("change-1")
-    assert row["challenge_count"] == 2 and row["challenge_bond_held"] == str(BOND * 2) and not contract.is_actionable("change-1")["actionable"]
+    assert row["challenge_count"] == 1 and row["challenge_bond_held"] == str(BOND) and not contract.is_actionable("change-1")["actionable"]
+    with direct_vm.expect_revert("not actionable"):
+        contract.consume_change("change-1")
 
 
 def test_zero_addresses_are_rejected(direct_vm, direct_deploy):
     contract = deploy(direct_vm, direct_deploy)
     with direct_vm.expect_revert("Zero maintainer"):
         contract.create_boundary("zero", "0x0000000000000000000000000000000000000000", "r", "p", "https://example.com/base", BASELINE_HASH, BOND, 60)
+    with direct_vm.expect_revert("Zero owner"):
+        direct_vm._greneal_module.nonzero_address("0x0000000000000000000000000000000000000000", "owner")
+
+
+def test_maintainer_self_challenge_is_not_paid_to_maintainer(direct_vm, direct_deploy):
+    contract = deploy(direct_vm, direct_deploy); create(contract); propose(direct_vm, contract); mock_review(direct_vm); contract.review_change("change-1")
+    direct_vm.value = BOND; contract.challenge_change("change-1"); direct_vm.value = 0
+    warp_to(direct_vm, "2026-08-23T08:01:01Z"); mock_review(direct_vm); contract.review_change("change-1")
+    row = contract.get_change("change-1")
+    assert row["challenge_settlement"] == "slashed" and row["challenge_bond_held"] == "0"
+    with direct_vm.expect_revert("refund unavailable"):
+        contract.withdraw_challenge_bond("change-1")
+    with direct_vm.expect_revert("not actionable"):
+        contract.consume_change("change-1")
+    warp_to(direct_vm, "2026-08-23T08:02:02Z")
+    contract.consume_change("change-1")
+
+
+def test_challenge_timing_blocks_early_review_and_owner_cancellation(direct_vm, direct_deploy):
+    contract = deploy(direct_vm, direct_deploy); create(contract); propose(direct_vm, contract); mock_review(direct_vm); contract.review_change("change-1")
+    direct_vm.value = BOND; contract.challenge_change("change-1"); direct_vm.value = 0
+    with direct_vm.expect_revert("window remains open"):
+        contract.review_change("change-1")
+    with direct_vm.expect_revert("cannot be cancelled"):
+        contract.cancel_change("change-1")
+    warp_to(direct_vm, "2026-08-23T08:02:01Z")
+    with direct_vm.expect_revert("settlement timeout is open"):
+        contract.review_change("change-1")
+    contract.settle_expired_challenge("change-1")
+    contract.withdraw_challenge_bond("change-1")
+    with direct_vm.expect_revert("No challenge refund"):
+        contract.withdraw_challenge_bond("change-1")
+
+
+def test_raw_hashing_preserves_non_utf8_integrity_input(direct_vm, direct_deploy):
+    contract = deploy(direct_vm, direct_deploy)
+    module = direct_vm._greneal_module
+    assert module.content_hash(b"\xff\x00") != module.content_hash(b"\x00")

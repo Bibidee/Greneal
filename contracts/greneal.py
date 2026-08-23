@@ -1,4 +1,4 @@
-# v0.1.3
+# v0.2.1
 # { "Depends": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6" }
 """Greneal: a semantic change-control firewall for governed resources."""
 
@@ -31,7 +31,6 @@ MAX_CHANGES = 1024
 MAX_TEXT = 3000
 MAX_URL = 512
 MAX_ID = 96
-MAX_CHALLENGERS = 8
 MIN_WINDOW = 60
 MAX_WINDOW = 30 * 24 * 60 * 60
 MIN_CONFIDENCE = 75
@@ -158,8 +157,8 @@ def canonical_hash(value) -> str:
     return result
 
 
-def content_hash(value: str) -> str:
-    return "0x" + hashlib.sha256(value.encode("utf-8")).hexdigest()
+def content_hash(value: bytes) -> str:
+    return "0x" + hashlib.sha256(value).hexdigest()
 
 
 def timestamp() -> int:
@@ -236,9 +235,9 @@ def equivalent(left, right) -> bool:
 def fetch_verified(value_url: str, expected_hash: str) -> str:
     response = gl.nondet.web.get(value_url)
     if response.status_code < 200 or response.status_code >= 300: raise ValueError("fetch failed")
-    body = response.body.decode("utf-8")
-    if len(body) == 0 or content_hash(body) != expected_hash: raise ValueError("hash mismatch")
-    return body
+    raw = response.body
+    if len(raw) == 0 or content_hash(raw) != expected_hash: raise ValueError("hash mismatch")
+    return raw.decode("utf-8")
 
 
 def observe(policy: str, baseline_url: str, baseline_hash: str, payload_url: str, payload_hash: str, evidence_url: str, evidence_hash: str, summary: str) -> dict:
@@ -256,15 +255,17 @@ def observe(policy: str, baseline_url: str, baseline_hash: str, payload_url: str
 
 class Greneal(gl.Contract):
     owner: Address
+    challenge_sink: Address
     paused: bool
     boundary_count: u256
     change_count: u256
     boundaries: TreeMap[str, Boundary]
     changes: TreeMap[str, Change]
-    challenge_bonds: TreeMap[str, u256]
 
-    def __init__(self, owner_address: str = ""):
+    def __init__(self, owner_address: str = "", challenge_sink_address: str = ""):
         self.owner = nonzero_address(owner_address, "owner") if owner_address else nonzero_address(gl.message.sender_address, "owner")
+        self.challenge_sink = nonzero_address(challenge_sink_address, "challenge sink") if challenge_sink_address else Address("0x000000000000000000000000000000000000dEaD")
+        if self.challenge_sink == self.owner: raise gl.vm.UserError(f"{EXPECTED} Challenge sink must differ from owner")
         self.paused = False; self.boundary_count = u256(0); self.change_count = u256(0)
 
     def _boundary(self, boundary_id: str) -> Boundary:
@@ -284,9 +285,6 @@ class Greneal(gl.Contract):
         if int(amount) <= 0: raise gl.vm.UserError(f"{EXPECTED} Invalid transfer")
         _Recipient(recipient).emit_transfer(value=amount)
 
-    def _bond_key(self, change_id: str, account: Address) -> str:
-        return change_id + ":" + account.as_hex.lower()
-
     @gl.public.write
     def set_paused(self, value: bool) -> None:
         if gl.message.sender_address != self.owner: raise gl.vm.UserError(f"{EXPECTED} Owner only")
@@ -300,6 +298,7 @@ class Greneal(gl.Contract):
         if self.boundaries.get(boundary_id) is not None or int(self.boundary_count) >= MAX_BOUNDARIES: raise gl.vm.UserError(f"{EXPECTED} Boundary unavailable")
         if int(challenge_bond) <= 0 or int(challenge_window) < MIN_WINDOW or int(challenge_window) > MAX_WINDOW: raise gl.vm.UserError(f"{EXPECTED} Invalid challenge configuration")
         maintainer_address = nonzero_address(maintainer, "maintainer")
+        if maintainer_address == self.challenge_sink: raise gl.vm.UserError(f"{EXPECTED} Maintainer cannot be challenge sink")
         self.boundaries[boundary_id] = Boundary(boundary_id, self.owner, maintainer_address, text(resource_id, "resource_id", 180), text(safety_policy, "safety_policy"), url(baseline_url, "baseline_url"), canonical_hash(baseline_hash), challenge_bond, challenge_window, ACTIVE, u256(timestamp()))
         self.boundary_count = u256(int(self.boundary_count) + 1); BoundaryCreated(boundary_id, maintainer_address).emit()
 
@@ -351,7 +350,7 @@ class Greneal(gl.Contract):
             held = change.challenge_bond_held
             if change.verdict == APPROVED:
                 change.challenge_bond_held, change.challenge_settlement = u256(0), "slashed"
-                self._send(boundary.maintainer, held); ChallengeSettled(change_id, "slashed", held).emit()
+                self._send(self.challenge_sink, held); ChallengeSettled(change_id, "slashed", held).emit()
             else:
                 change.challenge_settlement = "refund"
                 ChallengeSettled(change_id, "refund", held).emit()
@@ -360,18 +359,13 @@ class Greneal(gl.Contract):
     @gl.public.write.payable
     def challenge_change(self, change_id: str) -> None:
         self._active(); change = self._change(change_id); boundary = self._boundary(str(change.boundary_id))
-        if change.status not in (REVIEWED, CHALLENGED) or (change.status == REVIEWED and change.verdict != APPROVED): raise gl.vm.UserError(f"{EXPECTED} Change cannot be challenged")
+        if change.status != REVIEWED or change.verdict != APPROVED or int(change.challenge_count) != 0: raise gl.vm.UserError(f"{EXPECTED} Change cannot be challenged")
         if timestamp() >= int(change.reviewed_at) + int(boundary.challenge_window): raise gl.vm.UserError(f"{EXPECTED} Challenge window closed")
         if int(gl.message.value) != int(boundary.challenge_bond): raise gl.vm.UserError(f"{EXPECTED} Exact challenge bond required")
-        key = self._bond_key(change_id, gl.message.sender_address)
-        if self.challenge_bonds.get(key) is not None or int(change.challenge_count) >= MAX_CHALLENGERS: raise gl.vm.UserError(f"{EXPECTED} Duplicate or full challenge round")
-        if change.status == REVIEWED:
-            change.status, change.verdict, change.challenged_at = CHALLENGED, "", u256(timestamp())
-            change.challenge_open_until = u256(int(change.reviewed_at) + int(boundary.challenge_window))
-            change.challenge_review_deadline = u256(int(change.challenge_open_until) + int(boundary.challenge_window))
-        self.challenge_bonds[key] = boundary.challenge_bond
-        change.challenge_count = u256(int(change.challenge_count) + 1)
-        change.challenge_bond_held = u256(int(change.challenge_bond_held) + int(boundary.challenge_bond))
+        change.status, change.verdict, change.challenged_at = CHALLENGED, "", u256(timestamp())
+        change.challenge_open_until = u256(int(change.reviewed_at) + int(boundary.challenge_window))
+        change.challenge_review_deadline = u256(int(change.challenge_open_until) + int(boundary.challenge_window))
+        change.challenger, change.challenge_count, change.challenge_bond_held = gl.message.sender_address, u256(1), boundary.challenge_bond
         ChangeChallenged(change_id, gl.message.sender_address, change.challenge_count).emit()
 
     @gl.public.write
@@ -386,10 +380,9 @@ class Greneal(gl.Contract):
     def withdraw_challenge_bond(self, change_id: str) -> None:
         change = self._change(change_id)
         if change.challenge_settlement != "refund": raise gl.vm.UserError(f"{EXPECTED} Challenge refund unavailable")
-        key = self._bond_key(change_id, gl.message.sender_address)
-        amount = self.challenge_bonds.get(key)
-        if amount is None or int(amount) <= 0: raise gl.vm.UserError(f"{EXPECTED} No challenge refund")
-        self.challenge_bonds[key] = u256(0)
+        if gl.message.sender_address != change.challenger: raise gl.vm.UserError(f"{EXPECTED} Challenger only")
+        amount = change.challenge_bond_held
+        if int(amount) <= 0: raise gl.vm.UserError(f"{EXPECTED} No challenge refund")
         change.challenge_bond_held = u256(int(change.challenge_bond_held) - int(amount))
         self._send(gl.message.sender_address, amount)
         ChallengeExpired(change_id, gl.message.sender_address).emit()
@@ -413,7 +406,7 @@ class Greneal(gl.Contract):
     @gl.public.view
     def is_actionable(self, change_id: str) -> dict:
         change = self._change(change_id); boundary = self._boundary(str(change.boundary_id))
-        ready = not self.paused and boundary.status == ACTIVE and change.status == REVIEWED and change.verdict == APPROVED and timestamp() >= int(change.reviewed_at) + int(boundary.challenge_window)
+        ready = not self.paused and boundary.status == ACTIVE and change.status == REVIEWED and change.verdict == APPROVED and int(change.challenge_count) == 0 and int(change.challenge_bond_held) == 0 and timestamp() >= int(change.reviewed_at) + int(boundary.challenge_window)
         return {"change_id": str(change.id), "boundary_id": str(change.boundary_id), "actionable": ready, "resource_id": str(boundary.resource_id), "payload_hash": str(change.payload_hash), "verdict": str(change.verdict), "status": str(change.status)}
 
     @gl.public.view
@@ -428,4 +421,4 @@ class Greneal(gl.Contract):
 
     @gl.public.view
     def get_info(self) -> dict:
-        return {"name": "Greneal", "version": "0.2.0", "owner": self.owner.as_hex, "paused": self.paused, "boundary_count": int(self.boundary_count), "change_count": int(self.change_count), "max_boundaries": MAX_BOUNDARIES, "max_changes": MAX_CHANGES, "max_challengers": MAX_CHALLENGERS}
+        return {"name": "Greneal", "version": "0.2.1", "owner": self.owner.as_hex, "challenge_sink": self.challenge_sink.as_hex, "paused": self.paused, "boundary_count": int(self.boundary_count), "change_count": int(self.change_count), "max_boundaries": MAX_BOUNDARIES, "max_changes": MAX_CHANGES}
