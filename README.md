@@ -20,7 +20,12 @@ Greneal separates deterministic enforcement from semantic review:
 
 `contracts/greneal.py` is the sole contract candidate. Tests, fixtures, deployment helpers, and documentation live outside `contracts/`. `scripts/preflight.py` lints that exact source path and fails if any other Python file enters the deployable directory. No GitHub Action is included.
 
-## Status
+## Studionet deployment evidence
 
-Initial contract implementation and direct-mode tests are in progress. A Studionet deployment link will be added only after lint, tests, and deployed-source parity all pass.
+The canonical deployment is [Greneal at `0x0B33f933C664E651841270941eaF5F496c994547`](https://explorer-studio.genlayer.com/address/0x0B33f933C664E651841270941eaF5F496c994547). It was deployed from commit [`bf8712f`](https://github.com/Bibidee/Greneal/commit/bf8712f6405cb5a9e2b11de03fd16b275bb29fd0) in [deployment transaction `0x2e5ce4…3ea6f`](https://explorer-studio.genlayer.com/tx/0x2e5ce4e66969897ca86758074f1039d0a72db20d3cbe2bc1b4aaa4571043ea6f), finalized `SUCCESS` with majority agreement.
 
+Exact source retrieval parity was checked after finalization. Local and deployed SHA-256 are both `ee5d00c9cd0322b15b8e5abd53b67b1f531fbfc5df2efc642c1cf3eb03a2b4fa` (byte-for-byte match).
+
+The release gate passed: 13 Direct Mode tests, GenVM lint for the sole deployable source, and ABI schema generation. Live state setup is also finalized: [boundary creation](https://explorer-studio.genlayer.com/tx/0x72949ba130e1eb1c3d31525fc06a1aa8be534c882e231a6e27cb7a8ddc3bf778) and [safe proposal creation](https://explorer-studio.genlayer.com/tx/0xfac2654f938224f506f590cc13de815b297b5a407b5d5feba244fa0c688fe7b3).
+
+The first live semantic review, [transaction `0x4fca58…208b`](https://explorer-studio.genlayer.com/tx/0x4fca58c84ccb8d880e961d8cc11f02957bfbc83183cfe1008f5f9fa8ff87208b), finalized without state mutation because its nondeterministic review execution was unavailable. This is the designed retryable path: the proposal remains `proposed`; no verdict, challenge bond, or actionable permission was fabricated. The approved/blocked verdict paths and challenge expiry/refund route are covered by the Direct Mode matrix until a live semantic execution completes.
