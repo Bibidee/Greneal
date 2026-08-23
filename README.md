@@ -1,6 +1,6 @@
 # Greneal
 
-Greneal is a standalone GenLayer semantic change-control firewall. It lets a system owner register an immutable safety boundary for a governed resource, then allows maintainers to propose a change only when deterministic rules and independent GenLayer consensus agree that the change stays inside that boundary. Version 0.2.2 is a material source change; older Studionet deployments do not contain this state-invariant fix.
+Greneal is a standalone GenLayer semantic change-control firewall. It lets a system owner register an immutable safety boundary for a governed resource, then allows maintainers to propose a change only when deterministic rules and independent GenLayer consensus agree that the change stays inside that boundary. Version 0.2.3 fixes live GenVM web-response compatibility while preserving the v0.2.2 state invariants; older Studionet deployments are legacy.
 
 There is no frontend and no off-chain decision service. The only deployable source is `contracts/greneal.py`.
 
@@ -32,12 +32,34 @@ Deployment capacity is deliberately finite: 128 boundaries and 1,024 changes. Au
 
 ## Studionet deployment evidence
 
-The current hardened deployment is [Greneal v0.2.2 at `0x39a2128a55aa74753eBF0EC6f3392475E59D25B5`](https://explorer-studio.genlayer.com/address/0x39a2128a55aa74753eBF0EC6f3392475E59D25B5), deployed in [transaction `0xcd3e…ea2b`](https://explorer-studio.genlayer.com/tx/0xcd3e918e19259144f776bf3cc39b8b061792f093675e230f8f536dd6afa2ea2b). The finalized deployed source and local v0.2.2 source have the identical SHA-256: `b6b15416cec71fcf6b35ca957d910efa2e531be1f5251bb575284098ca2c3a63`.
+The current hardened deployment is [Greneal v0.2.3 at `0xf67E7f09355e4859384F1F81c26D83C9dB44a524`](https://explorer-studio.genlayer.com/address/0xf67E7f09355e4859384F1F81c26D83C9dB44a524), deployed from source commit [`402356f`](https://github.com/Bibidee/Greneal/commit/402356f) in [transaction `0x47f5…b61ee5`](https://explorer-studio.genlayer.com/tx/0x47f5b45443d86fa15ac0a4e6bfbc0cda99f5ca9df15e5be9c40bb85db6b61ee5). Deployment finalized `SUCCESS` with majority agreement.
 
-The canonical deployment is [Greneal at `0x0B33f933C664E651841270941eaF5F496c994547`](https://explorer-studio.genlayer.com/address/0x0B33f933C664E651841270941eaF5F496c994547). It was deployed from commit [`bf8712f`](https://github.com/Bibidee/Greneal/commit/bf8712f6405cb5a9e2b11de03fd16b275bb29fd0) in [deployment transaction `0x2e5ce4…3ea6f`](https://explorer-studio.genlayer.com/tx/0x2e5ce4e66969897ca86758074f1039d0a72db20d3cbe2bc1b4aaa4571043ea6f), finalized `SUCCESS` with majority agreement.
+Explorer source was retrieved after finalization. Local and deployed source SHA-256 are both `b7cd0ac27b0b9d8be073581b6acd90b97b744c385b8bc11dbf81fe82575d498c`; the 23,885-character sources match byte for byte. The v0.2.2 address `0x39a2128a55aa74753eBF0EC6f3392475E59D25B5` and all earlier deployments are legacy.
 
-Exact source retrieval parity was checked after finalization. Local and deployed SHA-256 are both `ee5d00c9cd0322b15b8e5abd53b67b1f531fbfc5df2efc642c1cf3eb03a2b4fa` (byte-for-byte match).
+Live artefacts are commit-pinned to repository commit `30958818d9d18cc2cfc8cb23216f25a82a78d442`. The baseline digest is `642c1f9f12720e6e7e08a9dfd412bdcb7c4a6367394f24d12d0aab3fd56b9324`; the safe payload digest is `f104fdf07e2abc1394e2fff27a507af7d9f3edee342e7b559752af4d8534be50`; the safe evidence digest is `f7ca797ab87920f22c3ef86bc580631ceda521cd180a4a41d76bc6ed603efc3b`; and the risky payload/evidence digest is `9aec9c169b2d4e33ecad2c2edb4f92cf22b0cf7a92ebc04d30b3b159d1aed000`.
 
-The release gate passed: 13 Direct Mode tests, GenVM lint for the sole deployable source, and ABI schema generation. Live state setup is also finalized: [boundary creation](https://explorer-studio.genlayer.com/tx/0x72949ba130e1eb1c3d31525fc06a1aa8be534c882e231a6e27cb7a8ddc3bf778) and [safe proposal creation](https://explorer-studio.genlayer.com/tx/0xfac2654f938224f506f590cc13de815b297b5a407b5d5feba244fa0c688fe7b3).
+### Finalized v0.2.3 transaction ledger
 
-The initial live semantic reviews used an external baseline page and finalized without state mutation because that evidence dependency was unavailable. This is the designed retryable path: the proposal remains `proposed`; no verdict, challenge bond, or actionable permission was fabricated. The replacement live boundary uses a versioned, public baseline document in this repository; the approved/blocked verdict paths and challenge expiry/refund route remain covered by the Direct Mode matrix.
+| Scenario | Transaction | Final state or observed result |
+| --- | --- | --- |
+| Deployment | [`0x47f5…b61ee5`](https://explorer-studio.genlayer.com/tx/0x47f5b45443d86fa15ac0a4e6bfbc0cda99f5ca9df15e5be9c40bb85db6b61ee5) | `SUCCESS`, majority agree, source parity exact |
+| Main boundary `v023-live` | [`0xbfbd…30f06`](https://explorer-studio.genlayer.com/tx/0xbfbdbcab2abc09249129960316ed1a6c0dafecdc22b7cf1bb1ba2d6e44230f06) | Active, 60-second challenge window |
+| Safe proposal `v023-safe` | [`0xe1d7…50766`](https://explorer-studio.genlayer.com/tx/0xe1d78770cfbcfa4028b0ae3c8fcd5113ec88f8c250ab7cd01492c04737450766) | Proposed with verified immutable artefacts |
+| Safe review | [`0x25dd…f00f`](https://explorer-studio.genlayer.com/tx/0x25dddf5250cac60e7bf50b6a738e973035f6d39ba6223ae0804ca0aafd56f00f) | `approved`, confidence 93; actionable only after delay |
+| Risky proposal `v023-risky` | [`0x0716…966e`](https://explorer-studio.genlayer.com/tx/0x0716d097fc8d4ec34c89d68def388b0aeffef1a82ae80a228bd8f45f00e7966e) | Proposed with verified immutable artefact |
+| Risky review | [`0x7ffe…506b`](https://explorer-studio.genlayer.com/tx/0x7ffe88f047807711c5ed790a4dbc593729983cdba14c76b5a89819f85219506b) | `blocked`, confidence 100; access/economic risk detected |
+| First challenge-path proposal/review | [`proposal`](https://explorer-studio.genlayer.com/tx/0x991b56c51bb01e0ea5ca4439ac4f4d1bafcf61ee0ec76e19d633ed136c0831e2) / [`review`](https://explorer-studio.genlayer.com/tx/0x8367946391b6da1c6b3833d1b05f38b70830ed800259dfb0ab653c56e947573c) | Approved; test challenge was submitted after the short window |
+| Expected late-challenge rejection | [`0xaa50…395ed6`](https://explorer-studio.genlayer.com/tx/0xaa50b552dc892e92be991427f87a6a4c0add7ce22bcc336f801c3903bd395ed6) | Finalized rollback; no bond held |
+| Timeout-path proposal/review | [`proposal`](https://explorer-studio.genlayer.com/tx/0x78972fdaf96c7434e8164c4776314d4c5b941dbe5fb1aea2f911427da78101e7) / [`review`](https://explorer-studio.genlayer.com/tx/0x6862e9979aba9e61daf2cd413b60627c35b914c94fe13b033587c7bda27b60e6) | Approved before challenge |
+| Bonded challenge | [`0xb166…1a6e1`](https://explorer-studio.genlayer.com/tx/0xb16619774ebc530d26ccc35d605634da18465d94e225ed8f61b8d52247e1a6e1) | Challenged; exact `0.001 GEN` bond held; non-actionable |
+| Late re-review rejection | [`0xc991…90a2`](https://explorer-studio.genlayer.com/tx/0xc991f94b2ac8b3807a15e8ad37ad195080d6f87dd8f15c17545e559254e690a2) | Finalized rollback; challenge remained safely unresolved |
+| Timeout settlement | [`0x1302…e303`](https://explorer-studio.genlayer.com/tx/0x13021aed4e52db3c8e471f7fbc093d26f650d3bafe87fc2897e0ec130427e303) | Cancelled into deterministic refund state |
+| Refund withdrawal | [`0x1067…934c4`](https://explorer-studio.genlayer.com/tx/0x10671ccd9f37d1684af0a8ab72560631388aec7ebdcf968904bde62aa3d934c4) | Bond returned exactly once; held amount zero |
+| Long-window boundary | [`0xef45…c5220`](https://explorer-studio.genlayer.com/tx/0xef45298e5087a1ab10eb3f295e19f43e22812b8a7529b2ac3e5e1f688f2c5220) | Active, 120-second challenge window |
+| Re-review proposal/initial review | [`proposal`](https://explorer-studio.genlayer.com/tx/0xd6f0fb3ed7ecbbe2883adf1bb8f78cd6b81a620c1a57b46edce06a86f7be6c1b) / [`review`](https://explorer-studio.genlayer.com/tx/0x6b0a63b1a064872b1b38fdcb688ca0cfae3260d53fdebd81a26dc79a6d1c1384) | Approved before challenge |
+| Re-review bonded challenge | [`0xacd5…f191d0`](https://explorer-studio.genlayer.com/tx/0xacd50863a675ee2aa1bc7acdea7ac9ae6730528de91811172881d754d0f191d0) | Exact bond held; proposal non-actionable |
+| Successful re-review | [`0x034e…33c12`](https://explorer-studio.genlayer.com/tx/0x034e2767d0b157303dac4612840a2000692e75adf6b331173b38fe5d1c333c12) | Finalized `approved`, confidence 100; bond slashed to neutral sink and held amount zero |
+| Expected post-slash timeout rejection | [`0x0bfb…a9ee1`](https://explorer-studio.genlayer.com/tx/0x0bfb67a860b17af959e70f70c64c4e1f7ae00a82fcf91a4e7ac6efa5e47a9ee1) | Finalized rollback; no second settlement |
+| Expected post-slash withdrawal rejection | [`0x07bd…32320`](https://explorer-studio.genlayer.com/tx/0x07bdbbc6ff4df8425fd7fe2dd666015816931dc9f090a67b989ab28f1bf32320) | Finalized rollback; no refund after slashing |
+
+The safe path became actionable only after its configured 60-second delay elapsed. The risky path remained non-actionable. Both challenged proposals were non-actionable while their bonds were unresolved. The two challenge paths prove timeout refund/withdrawal and successful re-review/slashing, with held accounting returning to zero in each terminal outcome.

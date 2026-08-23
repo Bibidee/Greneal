@@ -1,6 +1,6 @@
 # Greneal design
 
-## v0.2.2 hardening model
+## v0.2.3 hardening model
 
 Authorization and state transitions are deterministic. Only independently fetched, hash-verified artefacts and semantic safety classification enter GenLayer consensus. A boundary commits a HTTPS baseline URL and SHA-256 hash; a proposal commits payload URL/hash and evidence URL/hash. Validators fetch raw bytes with `gl.nondet.web.get`, SHA-256 the exact bytes, and fail closed if any commitment differs before decoding verified UTF-8 text. The LLM receives the verified payload, baseline, and evidence; it never decides payload binding. Binary/non-UTF-8 artefacts are intentionally unsupported and retry/fail closed.
 

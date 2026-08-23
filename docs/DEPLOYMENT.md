@@ -1,6 +1,19 @@
-# Greneal v0.1.3 deployment record (legacy)
+# Greneal deployment record
 
-This record applies only to the v0.1.3 code at the listed address. Do not represent that legacy deployment as containing v0.2.1 protections; the separate v0.2.1 record below is the current hardened deployment.
+## v0.2.3 Studionet deployment (current)
+
+- Contract: [`0xf67E7f09355e4859384F1F81c26D83C9dB44a524`](https://explorer-studio.genlayer.com/address/0xf67E7f09355e4859384F1F81c26D83C9dB44a524)
+- Deployment transaction: [`0x47f5b45443d86fa15ac0a4e6bfbc0cda99f5ca9df15e5be9c40bb85db6b61ee5`](https://explorer-studio.genlayer.com/tx/0x47f5b45443d86fa15ac0a4e6bfbc0cda99f5ca9df15e5be9c40bb85db6b61ee5)
+- Source commit: [`402356f`](https://github.com/Bibidee/Greneal/commit/402356f)
+- Local SHA-256: `b7cd0ac27b0b9d8be073581b6acd90b97b744c385b8bc11dbf81fe82575d498c`
+- Retrieved deployed-source SHA-256: `b7cd0ac27b0b9d8be073581b6acd90b97b744c385b8bc11dbf81fe82575d498c`
+- Parity: exact byte-for-byte match, 23,885 characters
+
+The complete finalized transaction ledger, including approved, blocked, timeout-refund, successful re-review/slash, and expected duplicate-settlement rejection paths, is maintained in the README. All earlier deployments below are legacy.
+
+## v0.1.3 deployment record (legacy)
+
+This record applies only to the v0.1.3 code at the listed address. Do not represent that legacy deployment as containing later protections; v0.2.3 above is the current hardened deployment.
 
 ## v0.2.1 Studionet deployment
 
@@ -15,7 +28,7 @@ This deployment resolves the legacy-source gap. External web availability remain
 
 The v0.2.1 deployment is superseded by v0.2.2 because its `is_actionable()` view used `challenge_count` while `consume_change()` did not.
 
-## v0.2.2 Studionet deployment (current)
+## v0.2.2 Studionet deployment (legacy)
 
 - Contract: [`0x39a2128a55aa74753eBF0EC6f3392475E59D25B5`](https://explorer-studio.genlayer.com/address/0x39a2128a55aa74753eBF0EC6f3392475E59D25B5)
 - Deployment transaction: [`0xcd3e918e19259144f776bf3cc39b8b061792f093675e230f8f536dd6afa2ea2b`](https://explorer-studio.genlayer.com/tx/0xcd3e918e19259144f776bf3cc39b8b061792f093675e230f8f536dd6afa2ea2b)
