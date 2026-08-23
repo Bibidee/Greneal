@@ -328,4 +328,4 @@ class Greneal(gl.Contract):
 
     @gl.public.view
     def get_info(self) -> dict:
-        return {"name": "Greneal", "version": "0.1.0", "owner": self.owner.as_hex, "paused": self.paused, "boundary_count": int(self.boundary_count), "change_count": int(self.change_count)}
+        return {"name": "Greneal", "version": "0.1.1", "owner": self.owner.as_hex, "paused": self.paused, "boundary_count": int(self.boundary_count), "change_count": int(self.change_count)}
