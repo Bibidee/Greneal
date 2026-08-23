@@ -1,4 +1,4 @@
-# v0.2.2
+# v0.2.3
 # { "Depends": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6" }
 """Greneal: a semantic change-control firewall for governed resources."""
 
@@ -234,7 +234,7 @@ def equivalent(left, right) -> bool:
 
 def fetch_verified(value_url: str, expected_hash: str) -> str:
     response = gl.nondet.web.get(value_url)
-    if response.status_code < 200 or response.status_code >= 300: raise ValueError("fetch failed")
+    if response.status < 200 or response.status >= 300: raise ValueError("fetch failed")
     raw = response.body
     if len(raw) == 0 or content_hash(raw) != expected_hash: raise ValueError("hash mismatch")
     return raw.decode("utf-8")
@@ -424,4 +424,4 @@ class Greneal(gl.Contract):
 
     @gl.public.view
     def get_info(self) -> dict:
-        return {"name": "Greneal", "version": "0.2.2", "owner": self.owner.as_hex, "challenge_sink": self.challenge_sink.as_hex, "paused": self.paused, "boundary_count": int(self.boundary_count), "change_count": int(self.change_count), "max_boundaries": MAX_BOUNDARIES, "max_changes": MAX_CHANGES}
+        return {"name": "Greneal", "version": "0.2.3", "owner": self.owner.as_hex, "challenge_sink": self.challenge_sink.as_hex, "paused": self.paused, "boundary_count": int(self.boundary_count), "change_count": int(self.change_count), "max_boundaries": MAX_BOUNDARIES, "max_changes": MAX_CHANGES}

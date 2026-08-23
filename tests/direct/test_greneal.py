@@ -271,3 +271,13 @@ def test_raw_hashing_preserves_non_utf8_integrity_input(direct_vm, direct_deploy
     contract = deploy(direct_vm, direct_deploy)
     module = direct_vm._greneal_module
     assert module.content_hash(b"\xff\x00") != module.content_hash(b"\x00")
+
+
+def test_fetch_verified_production_helper_accepts_exact_bytes_and_rejects_mismatch(direct_vm, direct_deploy):
+    deploy(direct_vm, direct_deploy); module = direct_vm._greneal_module
+    value, target = b"verified utf-8 evidence\n", "https://evidence.example/fixture"
+    expected = module.content_hash(value)
+    direct_vm.mock_web(target, {"status": 200, "body": value})
+    assert module.fetch_verified(target, expected) == value.decode("utf-8")
+    direct_vm.clear_mocks(); direct_vm.mock_web(target, {"status": 200, "body": value})
+    with pytest.raises(ValueError): module.fetch_verified(target, "0x" + "00" * 32)
