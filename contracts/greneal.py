@@ -1,4 +1,4 @@
-# v0.2.1
+# v0.2.2
 # { "Depends": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6" }
 """Greneal: a semantic change-control firewall for governed resources."""
 
@@ -285,6 +285,9 @@ class Greneal(gl.Contract):
         if int(amount) <= 0: raise gl.vm.UserError(f"{EXPECTED} Invalid transfer")
         _Recipient(recipient).emit_transfer(value=amount)
 
+    def _actionable(self, change: Change, boundary: Boundary) -> bool:
+        return not self.paused and boundary.status == ACTIVE and change.status == REVIEWED and change.verdict == APPROVED and int(change.challenge_bond_held) == 0 and timestamp() >= int(change.reviewed_at) + int(boundary.challenge_window)
+
     @gl.public.write
     def set_paused(self, value: bool) -> None:
         if gl.message.sender_address != self.owner: raise gl.vm.UserError(f"{EXPECTED} Owner only")
@@ -391,7 +394,7 @@ class Greneal(gl.Contract):
     def consume_change(self, change_id: str) -> None:
         self._active(); change = self._change(change_id); boundary = self._boundary(str(change.boundary_id))
         if gl.message.sender_address != boundary.maintainer or boundary.status != ACTIVE: raise gl.vm.UserError(f"{EXPECTED} Maintainer and active boundary required")
-        if change.status != REVIEWED or change.verdict != APPROVED or int(change.challenge_bond_held) != 0 or timestamp() < int(change.reviewed_at) + int(boundary.challenge_window): raise gl.vm.UserError(f"{EXPECTED} Change is not actionable")
+        if not self._actionable(change, boundary): raise gl.vm.UserError(f"{EXPECTED} Change is not actionable")
         change.status = CONSUMED; ChangeConsumed(change_id).emit()
 
     @gl.public.write
@@ -406,7 +409,7 @@ class Greneal(gl.Contract):
     @gl.public.view
     def is_actionable(self, change_id: str) -> dict:
         change = self._change(change_id); boundary = self._boundary(str(change.boundary_id))
-        ready = not self.paused and boundary.status == ACTIVE and change.status == REVIEWED and change.verdict == APPROVED and int(change.challenge_count) == 0 and int(change.challenge_bond_held) == 0 and timestamp() >= int(change.reviewed_at) + int(boundary.challenge_window)
+        ready = self._actionable(change, boundary)
         return {"change_id": str(change.id), "boundary_id": str(change.boundary_id), "actionable": ready, "resource_id": str(boundary.resource_id), "payload_hash": str(change.payload_hash), "verdict": str(change.verdict), "status": str(change.status)}
 
     @gl.public.view
@@ -421,4 +424,4 @@ class Greneal(gl.Contract):
 
     @gl.public.view
     def get_info(self) -> dict:
-        return {"name": "Greneal", "version": "0.2.1", "owner": self.owner.as_hex, "challenge_sink": self.challenge_sink.as_hex, "paused": self.paused, "boundary_count": int(self.boundary_count), "change_count": int(self.change_count), "max_boundaries": MAX_BOUNDARIES, "max_changes": MAX_CHANGES}
+        return {"name": "Greneal", "version": "0.2.2", "owner": self.owner.as_hex, "challenge_sink": self.challenge_sink.as_hex, "paused": self.paused, "boundary_count": int(self.boundary_count), "change_count": int(self.change_count), "max_boundaries": MAX_BOUNDARIES, "max_changes": MAX_CHANGES}

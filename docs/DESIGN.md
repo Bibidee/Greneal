@@ -1,12 +1,16 @@
 # Greneal design
 
-## v0.2.1 hardening model
+## v0.2.2 hardening model
 
 Authorization and state transitions are deterministic. Only independently fetched, hash-verified artefacts and semantic safety classification enter GenLayer consensus. A boundary commits a HTTPS baseline URL and SHA-256 hash; a proposal commits payload URL/hash and evidence URL/hash. Validators fetch raw bytes with `gl.nondet.web.get`, SHA-256 the exact bytes, and fail closed if any commitment differs before decoding verified UTF-8 text. The LLM receives the verified payload, baseline, and evidence; it never decides payload binding. Binary/non-UTF-8 artefacts are intentionally unsupported and retry/fail closed.
 
 ### Challenge lifecycle
 
 `reviewed/approved` changes accept one exact triggering bond. That first challenge changes state to `challenged` immediately and forces the proposal through a public re-review round; additional people need no participant slot to obtain protection because no proposal can bypass the round. Re-review is callable by anyone only after the original window closes. An approved re-review records a fresh `reviewed_at`, enforces a fresh finalization delay, and transfers the bond exactly once to the deployment's neutral challenge sink—not to the maintainer. Blocked/inconclusive re-review opens one exact refund claim for the triggering challenger. If nobody completes re-review by the second deadline, anyone can settle to the same refund state. Pause and closure never prevent settlement or withdrawal; the held value is zeroed before transfer so it cannot be paid twice.
+
+`challenge_count` remains `1` after re-review as audit history. It does not gate eligibility. One canonical `_actionable(change, boundary)` predicate drives both the public view and `consume_change`: contract unpaused, boundary active, `reviewed/approved`, no held challenge bond, and the latest `reviewed_at` plus finalization delay elapsed. This prevents view/write divergence and makes a successfully re-approved proposal actionable only after its fresh delay.
+
+The default sink is the fixed dead address. A custom constructor sink is an observable deployment-time configuration but cannot be proven neutral solely from its address; production deployers must choose an independently governed or otherwise demonstrably neutral sink.
 
 ### Consensus and capacity
 

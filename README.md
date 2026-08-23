@@ -1,6 +1,6 @@
 # Greneal
 
-Greneal is a standalone GenLayer semantic change-control firewall. It lets a system owner register an immutable safety boundary for a governed resource, then allows maintainers to propose a change only when deterministic rules and independent GenLayer consensus agree that the change stays inside that boundary. Version 0.2.1 is a material source change; the currently recorded Studionet v0.1.3 deployment does not contain these hardening changes.
+Greneal is a standalone GenLayer semantic change-control firewall. It lets a system owner register an immutable safety boundary for a governed resource, then allows maintainers to propose a change only when deterministic rules and independent GenLayer consensus agree that the change stays inside that boundary. Version 0.2.2 is a material source change; older Studionet deployments do not contain this state-invariant fix.
 
 There is no frontend and no off-chain decision service. The only deployable source is `contracts/greneal.py`.
 
@@ -25,6 +25,8 @@ Greneal separates deterministic enforcement from semantic review:
 The boundary commits a baseline URL and SHA-256 hash. A proposal commits three immutable artefacts: payload URL/hash, evidence URL/hash, and the boundary's baseline URL/hash. Every validator fetches raw content and programmatically verifies SHA-256 before semantic interpretation. A mismatch, empty response, malformed model result, or unavailable source fails closed and leaves the proposal retryable; an LLM cannot assert payload binding.
 
 Approved changes have an open challenge window. The first exact-bond challenge opens one forced public re-review round; later objections need no slot because the proposal is already non-actionable and cannot bypass that round. After the window, anyone may re-review. Approval sends the single bond to a neutral sink, never the maintainer; blocked/inconclusive re-review lets the triggering challenger withdraw once. A second deadline permits anyone to settle a stalled round into that refund state. `is_actionable()` explicitly requires an active boundary, unpaused contract, reviewed approval, no active challenge, no held bond, and the finalization delay. Review artefacts are textual UTF-8: SHA-256 is calculated over raw fetched bytes first, then only verified bytes are decoded for semantic review.
+
+`challenge_count` is permanent audit history, not an eligibility flag. Both `is_actionable()` and `consume_change()` call the same internal predicate: active contract and boundary, `reviewed/approved`, zero held bond, and a delay measured from the latest `reviewed_at`. The default challenge sink is the fixed dead address. A custom sink is a deployment-time trust choice—not provably neutral—and production deployments should use a demonstrably neutral recipient.
 
 Deployment capacity is deliberately finite: 128 boundaries and 1,024 changes. Audit history is retained rather than deleted.
 

@@ -13,6 +13,8 @@ This record applies only to the v0.1.3 code at the listed address. Do not repres
 
 This deployment resolves the legacy-source gap. External web availability remains intentionally fail-closed and retryable: the contract cannot safely make a remote artifact permanently available, but it verifies its exact SHA-256 before every semantic review and never fabricates an approval when retrieval fails.
 
+The v0.2.1 deployment is superseded by v0.2.2 source because its `is_actionable()` view used `challenge_count` while `consume_change()` did not. Do not use it for final submission once v0.2.2 is deployed and parity-verified.
+
 - Network: Studionet
 - Contract: [`0x0B33f933C664E651841270941eaF5F496c994547`](https://explorer-studio.genlayer.com/address/0x0B33f933C664E651841270941eaF5F496c994547)
 - Deployment transaction: [`0x2e5ce4e66969897ca86758074f1039d0a72db20d3cbe2bc1b4aaa4571043ea6f`](https://explorer-studio.genlayer.com/tx/0x2e5ce4e66969897ca86758074f1039d0a72db20d3cbe2bc1b4aaa4571043ea6f)

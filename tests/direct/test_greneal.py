@@ -225,13 +225,30 @@ def test_maintainer_self_challenge_is_not_paid_to_maintainer(direct_vm, direct_d
     direct_vm.value = BOND; contract.challenge_change("change-1"); direct_vm.value = 0
     warp_to(direct_vm, "2026-08-23T08:01:01Z"); mock_review(direct_vm); contract.review_change("change-1")
     row = contract.get_change("change-1")
-    assert row["challenge_settlement"] == "slashed" and row["challenge_bond_held"] == "0"
+    assert row["challenge_settlement"] == "slashed" and row["challenge_bond_held"] == "0" and row["challenge_count"] == 1
     with direct_vm.expect_revert("refund unavailable"):
         contract.withdraw_challenge_bond("change-1")
     with direct_vm.expect_revert("not actionable"):
         contract.consume_change("change-1")
     warp_to(direct_vm, "2026-08-23T08:02:02Z")
     contract.consume_change("change-1")
+    assert not contract.is_actionable("change-1")["actionable"]
+    with direct_vm.expect_revert("not actionable"):
+        contract.consume_change("change-1")
+
+
+def test_view_and_consume_share_post_challenge_eligibility(direct_vm, direct_deploy):
+    contract = deploy(direct_vm, direct_deploy); create(contract); propose(direct_vm, contract); mock_review(direct_vm); contract.review_change("change-1")
+    direct_vm.value = BOND; contract.challenge_change("change-1"); direct_vm.value = 0
+    warp_to(direct_vm, "2026-08-23T08:01:01Z"); mock_review(direct_vm); contract.review_change("change-1")
+    assert contract.get_change("change-1")["challenge_count"] == 1
+    assert not contract.is_actionable("change-1")["actionable"]
+    with direct_vm.expect_revert("not actionable"):
+        contract.consume_change("change-1")
+    warp_to(direct_vm, "2026-08-23T08:02:02Z")
+    assert contract.is_actionable("change-1")["actionable"]
+    contract.consume_change("change-1")
+    assert contract.get_change("change-1")["status"] == "consumed"
 
 
 def test_challenge_timing_blocks_early_review_and_owner_cancellation(direct_vm, direct_deploy):
