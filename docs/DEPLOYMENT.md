@@ -1,6 +1,6 @@
 # Greneal deployment record
 
-## v0.2.3 Studionet deployment (current)
+## v0.2.3 Studionet deployment (LEGACY / SUPERSEDED)
 
 - Contract: [`0xf67E7f09355e4859384F1F81c26D83C9dB44a524`](https://explorer-studio.genlayer.com/address/0xf67E7f09355e4859384F1F81c26D83C9dB44a524)
 - Deployment transaction: [`0x47f5b45443d86fa15ac0a4e6bfbc0cda99f5ca9df15e5be9c40bb85db6b61ee5`](https://explorer-studio.genlayer.com/tx/0x47f5b45443d86fa15ac0a4e6bfbc0cda99f5ca9df15e5be9c40bb85db6b61ee5)
@@ -13,7 +13,7 @@ The complete finalized transaction ledger, including approved, blocked, timeout-
 
 ## v0.1.3 deployment record (LEGACY / SUPERSEDED)
 
-This record applies only to the v0.1.3 code at the listed address. Do not represent that legacy deployment as containing later protections; v0.2.3 above is the current hardened deployment.
+This record applies only to the v0.1.3 code at the listed address. Do not represent that legacy deployment as containing later protections.
 
 ## v0.2.1 Studionet deployment (LEGACY / SUPERSEDED)
 

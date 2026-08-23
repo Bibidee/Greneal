@@ -2,12 +2,10 @@
 
 Greneal is a standalone GenLayer semantic change-control firewall. It lets a system owner register an immutable safety boundary for a governed resource, then allows maintainers to propose a change only when deterministic rules and independent GenLayer consensus agree that the change stays inside that boundary. Version 0.2.3 fixes live GenVM web-response compatibility while preserving the v0.2.2 state invariants; older Studionet deployments are legacy.
 
-| Current release | Canonical Studionet deployment |
+| Current source release | Deployment status |
 | --- | --- |
-| Version | `v0.2.3` |
-| Contract | [`0xf67E7f09355e4859384F1F81c26D83C9dB44a524`](https://explorer-studio.genlayer.com/address/0xf67E7f09355e4859384F1F81c26D83C9dB44a524) |
-| Source commit | [`402356ffb3356aab2198e6d8be1fc1e7c4120803`](https://github.com/Bibidee/Greneal/commit/402356ffb3356aab2198e6d8be1fc1e7c4120803) |
-| Deployed source SHA-256 | `b7cd0ac27b0b9d8be073581b6acd90b97b744c385b8bc11dbf81fe82575d498c` |
+| Version | `v0.3.0` |
+| Deployment | Pending fresh Studionet deployment; v0.2.3 below is legacy |
 
 There is no frontend and no off-chain decision service. The only deployable source is `contracts/greneal.py`.
 
@@ -27,9 +25,11 @@ Greneal is not a thin “AI decides X” wrapper. It separates deterministic enf
 
 `contracts/greneal.py` is the sole contract candidate. Tests, fixtures, deployment helpers, and documentation live outside `contracts/`. `scripts/preflight.py` lints that exact source path and fails if any other Python file enters the deployable directory. GitHub Actions runs the same pinned preflight on push and pull request.
 
-## v0.2 security model
+## v0.3 security model
 
-The boundary commits a baseline URL and SHA-256 hash. A proposal commits three immutable artefacts: payload URL/hash, evidence URL/hash, and the boundary's baseline URL/hash. Every validator fetches raw content and programmatically verifies SHA-256 before semantic interpretation. A mismatch, empty response, malformed model result, or unavailable source fails closed and leaves the proposal retryable; an LLM cannot assert payload binding.
+The boundary commits a baseline URL and SHA-256 hash. A proposal commits payload and evidence URL/hash pairs. Every validator fetches raw bytes, checks HTTP success and non-emptiness, verifies SHA-256, enforces the explicit 12,000-byte maximum, decodes UTF-8, and presents the complete accepted text to semantic review. Nothing committed is silently truncated. Mismatch, oversize, invalid UTF-8, malformed model output, or unavailability fails closed; an LLM cannot assert payload binding.
+
+Failures are classified as `fetch_unavailable`, `bad_http_status`, `empty_response`, `hash_mismatch`, `invalid_utf8`, `artifact_too_large`, or `malformed_model_output`. External availability failures are retryable. Deterministic integrity failures and invalid semantic output never approve or mutate a proposal into approval.
 
 ### Consensus and enforcement
 
@@ -41,13 +41,15 @@ Approved changes have an open challenge window. The first exact-bond challenge o
 
 Deployment capacity is deliberately finite: 128 boundaries and 1,024 changes. Audit history is retained rather than deleted.
 
-### v0.2.2 to v0.2.3 runtime correction
+### Release evolution
 
 The v0.2.2 fetch path read `response.status_code`, but the pinned GenLayer runtime exposes `response.status`. Real reviews therefore failed during execution. The fail-closed lifecycle kept each proposal unchanged and retryable: no verdict or actionable permission was fabricated. v0.2.3 uses the supported field and adds regression coverage around `fetch_verified()` with exact-byte hashing and mismatch rejection.
 
-## Studionet deployment evidence
+v0.3.0 removes the remaining semantic-integrity gap: v0.2.3 hashed complete artefacts but sliced each semantic input to 12,000 characters. v0.3.0 instead rejects raw artefacts above 12,000 bytes and reviews every decoded character of every accepted artefact.
 
-The current hardened deployment is [Greneal v0.2.3 at `0xf67E7f09355e4859384F1F81c26D83C9dB44a524`](https://explorer-studio.genlayer.com/address/0xf67E7f09355e4859384F1F81c26D83C9dB44a524), deployed from source commit [`402356f`](https://github.com/Bibidee/Greneal/commit/402356f) in [transaction `0x47f5…b61ee5`](https://explorer-studio.genlayer.com/tx/0x47f5b45443d86fa15ac0a4e6bfbc0cda99f5ca9df15e5be9c40bb85db6b61ee5). Deployment finalized `SUCCESS` with majority agreement.
+## Legacy v0.2.3 Studionet deployment evidence
+
+The legacy deployment is [Greneal v0.2.3 at `0xf67E7f09355e4859384F1F81c26D83C9dB44a524`](https://explorer-studio.genlayer.com/address/0xf67E7f09355e4859384F1F81c26D83C9dB44a524), deployed from source commit [`402356f`](https://github.com/Bibidee/Greneal/commit/402356f) in [transaction `0x47f5…b61ee5`](https://explorer-studio.genlayer.com/tx/0x47f5b45443d86fa15ac0a4e6bfbc0cda99f5ca9df15e5be9c40bb85db6b61ee5). Deployment finalized `SUCCESS` with majority agreement.
 
 Explorer source was retrieved after finalization. Local and deployed source SHA-256 are both `b7cd0ac27b0b9d8be073581b6acd90b97b744c385b8bc11dbf81fe82575d498c`; the 23,885-character sources match byte for byte. The v0.2.2 address `0x39a2128a55aa74753eBF0EC6f3392475E59D25B5` and all earlier deployments are legacy.
 
@@ -91,7 +93,7 @@ The safe path became actionable only after its configured 60-second delay elapse
 
 ## Release validation
 
-- 27 Direct Mode tests passed.
+- 33 Direct Mode tests passed.
 - 16 preflight invariants passed.
 - GenVM lint passed 3/3 checks on the sole deployable source.
 - ABI schema generation passed.

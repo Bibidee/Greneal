@@ -1,6 +1,8 @@
 # Greneal design
 
-## v0.2.3 hardening model
+## v0.3.0 hardening model
+
+Each baseline, payload, and evidence response is hashed over exact raw bytes, limited to 12,000 bytes, decoded strictly as UTF-8, and then presented in full to semantic review. Oversized input is rejected rather than truncated, eliminating any committed but semantically hidden tail.
 
 Authorization and state transitions are deterministic. Only independently fetched, hash-verified artefacts and semantic safety classification enter GenLayer consensus. A boundary commits a HTTPS baseline URL and SHA-256 hash; a proposal commits payload URL/hash and evidence URL/hash. Validators fetch raw bytes with `gl.nondet.web.get`, SHA-256 the exact bytes, and fail closed if any commitment differs before decoding verified UTF-8 text. The LLM receives the verified payload, baseline, and evidence; it never decides payload binding. Binary/non-UTF-8 artefacts are intentionally unsupported and retry/fail closed.
 

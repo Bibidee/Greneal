@@ -281,3 +281,47 @@ def test_fetch_verified_production_helper_accepts_exact_bytes_and_rejects_mismat
     assert module.fetch_verified(target, expected) == value.decode("utf-8")
     direct_vm.clear_mocks(); direct_vm.mock_web(target, {"status": 200, "body": value})
     with pytest.raises(ValueError): module.fetch_verified(target, "0x" + "00" * 32)
+
+
+def test_artifact_exact_maximum_is_accepted(direct_vm, direct_deploy):
+    deploy(direct_vm, direct_deploy); module = direct_vm._greneal_module
+    raw, target = b"a" * module.MAX_ARTIFACT_BYTES, "https://evidence.example/max"
+    direct_vm.mock_web(target, {"status": 200, "body": raw})
+    assert module.fetch_verified(target, module.content_hash(raw)) == raw.decode("utf-8")
+
+
+@pytest.mark.parametrize("label", ["baseline", "payload", "evidence"])
+def test_each_oversized_artifact_is_rejected(label, direct_vm, direct_deploy):
+    deploy(direct_vm, direct_deploy); module = direct_vm._greneal_module
+    raw, target = b"a" * (module.MAX_ARTIFACT_BYTES + 1), f"https://evidence.example/{label}"
+    direct_vm.mock_web(target, {"status": 200, "body": raw})
+    with pytest.raises(ValueError, match="artifact_too_large"):
+        module.fetch_verified(target, module.content_hash(raw))
+
+
+def test_empty_and_invalid_utf8_are_classified(direct_vm, direct_deploy):
+    deploy(direct_vm, direct_deploy); module = direct_vm._greneal_module
+    empty, invalid = "https://evidence.example/empty", "https://evidence.example/invalid"
+    direct_vm.mock_web(empty, {"status": 200, "body": b""})
+    with pytest.raises(ValueError, match="empty_response"):
+        module.fetch_verified(empty, module.content_hash(b""))
+    direct_vm.clear_mocks(); raw = b"\xff\xfe"
+    direct_vm.mock_web(invalid, {"status": 200, "body": raw})
+    with pytest.raises(ValueError, match="invalid_utf8"):
+        module.fetch_verified(invalid, module.content_hash(raw))
+
+
+def test_complete_accepted_artifacts_reach_semantic_prompt_without_truncation(direct_vm, direct_deploy):
+    deploy(direct_vm, direct_deploy); module = direct_vm._greneal_module
+    urls = ["https://evidence.example/base", "https://evidence.example/payload", "https://evidence.example/evidence"]
+    bodies = [b"baseline", b"s" * 11900 + b"MALICIOUS_TAIL", b"evidence"]
+    for target, raw in zip(urls, bodies): direct_vm.mock_web(target, {"status": 200, "body": raw})
+    captured = {}
+    def prompt(value, response_format=None):
+        captured["value"] = value
+        return {"scope_preserved": "no", "access_expansion": "yes", "economic_risk": "yes", "reversibility": "no", "compatibility": "no", "confidence": 100, "rationale": "Tail changes the security result."}
+    module.gl.nondet.exec_prompt = prompt
+    result = module.observe("policy", urls[0], module.content_hash(bodies[0]), urls[1], module.content_hash(bodies[1]), urls[2], module.content_hash(bodies[2]), "summary")
+    assert result["kind"] == "analysis"
+    assert "MALICIOUS_TAIL" in captured["value"]
+    assert bodies[1].decode("utf-8") in captured["value"]

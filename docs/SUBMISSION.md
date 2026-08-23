@@ -1,12 +1,10 @@
 # Greneal — Semantic Change-Control Firewall
 
-**Category:** GenLayer Intelligent Contracts  
-**Current version:** v0.2.3  
-**Current contract:** [`0xf67E7f09355e4859384F1F81c26D83C9dB44a524`](https://explorer-studio.genlayer.com/address/0xf67E7f09355e4859384F1F81c26D83C9dB44a524)  
-**Deployment transaction:** [`0x47f5b45443d86fa15ac0a4e6bfbc0cda99f5ca9df15e5be9c40bb85db6b61ee5`](https://explorer-studio.genlayer.com/tx/0x47f5b45443d86fa15ac0a4e6bfbc0cda99f5ca9df15e5be9c40bb85db6b61ee5)  
-**Source commit:** [`402356ffb3356aab2198e6d8be1fc1e7c4120803`](https://github.com/Bibidee/Greneal/commit/402356ffb3356aab2198e6d8be1fc1e7c4120803)  
-**Evidence commit:** [`9bec43a81a0326e382ef324c839d47fb3da0cfd7`](https://github.com/Bibidee/Greneal/commit/9bec43a81a0326e382ef324c839d47fb3da0cfd7)  
-**Source SHA-256:** `b7cd0ac27b0b9d8be073581b6acd90b97b744c385b8bc11dbf81fe82575d498c`
+**Category:** GenLayer Intelligent Contracts
+
+**Current version:** v0.3.0
+
+**Deployment:** Pending fresh Studionet deployment and evidence
 
 ## Purpose
 
@@ -30,6 +28,6 @@ Authorization, storage bounds, hashes, structured-result validation, verdict der
 
 ## Validation and limitations
 
-Release gates pass: 27 Direct Mode tests, 16 preflight invariants, GenVM lint 3/3, ABI schema generation, and exactly one deployable source.
+Release gates pass: 33 Direct Mode tests, 16 preflight invariants, GenVM lint 3/3, ABI schema generation, and exactly one deployable source.
 
 External artefact availability affects liveness; validator disagreement can prevent approval; review artefacts are bounded textual UTF-8; deployment capacity is 128 boundaries and 1,024 changes; and a custom challenge sink is a deployment-time trust choice. These constraints fail closed and are documented rather than hidden.
