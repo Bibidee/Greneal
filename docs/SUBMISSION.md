@@ -4,7 +4,21 @@
 
 **Current version:** v0.3.0
 
-**Deployment:** Pending fresh Studionet deployment and evidence
+**Current contract:** [`0x60797a1368C093DB8609Ca301c0d13fC81f5a239`](https://explorer-studio.genlayer.com/address/0x60797a1368C093DB8609Ca301c0d13fC81f5a239)
+
+**Deployment:** [`0x76c9c4d24e949483a8d025af6c1cb2fc467541cd764184d57c4714a7aab2aa78`](https://explorer-studio.genlayer.com/tx/0x76c9c4d24e949483a8d025af6c1cb2fc467541cd764184d57c4714a7aab2aa78)
+
+**Source commit:** [`93e53d7`](https://github.com/Bibidee/Greneal/commit/93e53d7)
+
+**Source SHA-256:** `6a7d3f721dc53e7616bccb83b2450f9bee6cce8e29862787ee0cebdc2f5e26a6` (exact parity)
+
+## Fresh v0.3.0 live proof
+
+- Safe review: [`APPROVED`](https://explorer-studio.genlayer.com/tx/0x792d5203ce3fe1d5e38814a29c1ed157d275d21740092fe5461037d3ad0d33dc).
+- Risky review: [`BLOCKED`](https://explorer-studio.genlayer.com/tx/0x4494022dabed4da0c48740237c545e27077d3628109c0f3b30063068bd5de70e).
+- Integrity mismatch: [review rolled back](https://explorer-studio.genlayer.com/tx/0x8d65b51abac395e2dbb11ec43bebfc3f1a99ea98e99df94608ad401dcf69b80a) with proposal unchanged.
+- Bonded challenge: [`0xbd63a649…`](https://explorer-studio.genlayer.com/tx/0xbd63a6495cc208c08b9c1a5b90083d82d6e395df30a1b5d5b5a58a9848f4c227).
+- Successful approved re-review/slash: [`0x3641b21c…`](https://explorer-studio.genlayer.com/tx/0x3641b21cd0596b735de87bba39a3097f3d955a9076159f7e49e09139c52690f8), held bond zero.
 
 ## Purpose
 

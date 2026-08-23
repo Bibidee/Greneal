@@ -2,10 +2,13 @@
 
 Greneal is a standalone GenLayer semantic change-control firewall. It lets a system owner register an immutable safety boundary for a governed resource, then allows maintainers to propose a change only when deterministic rules and independent GenLayer consensus agree that the change stays inside that boundary. Version 0.2.3 fixes live GenVM web-response compatibility while preserving the v0.2.2 state invariants; older Studionet deployments are legacy.
 
-| Current source release | Deployment status |
+| Current release | Canonical Studionet deployment |
 | --- | --- |
 | Version | `v0.3.0` |
-| Deployment | Pending fresh Studionet deployment; v0.2.3 below is legacy |
+| Contract | [`0x60797a1368C093DB8609Ca301c0d13fC81f5a239`](https://explorer-studio.genlayer.com/address/0x60797a1368C093DB8609Ca301c0d13fC81f5a239) |
+| Deployment tx | [`0x76c9c4d24e949483a8d025af6c1cb2fc467541cd764184d57c4714a7aab2aa78`](https://explorer-studio.genlayer.com/tx/0x76c9c4d24e949483a8d025af6c1cb2fc467541cd764184d57c4714a7aab2aa78) |
+| Source commit | [`93e53d7`](https://github.com/Bibidee/Greneal/commit/93e53d7) |
+| Source SHA-256 | `6a7d3f721dc53e7616bccb83b2450f9bee6cce8e29862787ee0cebdc2f5e26a6` (exact deployed/local parity) |
 
 There is no frontend and no off-chain decision service. The only deployable source is `contracts/greneal.py`.
 

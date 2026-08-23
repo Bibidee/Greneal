@@ -1,5 +1,13 @@
 # Greneal deployment record
 
+## v0.3.0 Studionet deployment (CURRENT)
+
+- Contract: [`0x60797a1368C093DB8609Ca301c0d13fC81f5a239`](https://explorer-studio.genlayer.com/address/0x60797a1368C093DB8609Ca301c0d13fC81f5a239)
+- Deployment: [`0x76c9c4d24e949483a8d025af6c1cb2fc467541cd764184d57c4714a7aab2aa78`](https://explorer-studio.genlayer.com/tx/0x76c9c4d24e949483a8d025af6c1cb2fc467541cd764184d57c4714a7aab2aa78)
+- Source commit: `93e53d7`
+- Local/deployed SHA-256: `6a7d3f721dc53e7616bccb83b2450f9bee6cce8e29862787ee0cebdc2f5e26a6`
+- Parity: exact byte-for-byte match
+
 ## v0.2.3 Studionet deployment (LEGACY / SUPERSEDED)
 
 - Contract: [`0xf67E7f09355e4859384F1F81c26D83C9dB44a524`](https://explorer-studio.genlayer.com/address/0xf67E7f09355e4859384F1F81c26D83C9dB44a524)
