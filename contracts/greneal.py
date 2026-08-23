@@ -1,4 +1,4 @@
-# v0.1.0
+# v0.1.1
 # { "Depends": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6" }
 """Greneal: a semantic change-control firewall for governed resources."""
 
@@ -194,7 +194,7 @@ class Greneal(gl.Contract):
     changes: TreeMap[str, Change]
 
     def __init__(self, owner_address: str = ""):
-        self.owner = Address(owner_address) if owner_address else gl.message.sender_address
+        self.owner = owner_address if isinstance(owner_address, Address) else Address(owner_address) if owner_address else gl.message.sender_address
         self.paused = False; self.boundary_count = u256(0); self.change_count = u256(0)
 
     def _boundary(self, boundary_id: str) -> Boundary:
