@@ -1,6 +1,6 @@
 # Greneal
 
-Greneal is a standalone GenLayer semantic change-control firewall. It lets a system owner register an immutable safety boundary for a governed resource, then allows maintainers to propose a change only when deterministic rules and independent GenLayer consensus agree that the change stays inside that boundary.
+Greneal is a standalone GenLayer semantic change-control firewall. It lets a system owner register an immutable safety boundary for a governed resource, then allows maintainers to propose a change only when deterministic rules and independent GenLayer consensus agree that the change stays inside that boundary. Version 0.2 is a material source change; the currently recorded Studionet v0.1.3 deployment does not contain these hardening changes.
 
 There is no frontend and no off-chain decision service. The only deployable source is `contracts/greneal.py`.
 
@@ -18,7 +18,15 @@ Greneal separates deterministic enforcement from semantic review:
 
 ## Lint and submission policy
 
-`contracts/greneal.py` is the sole contract candidate. Tests, fixtures, deployment helpers, and documentation live outside `contracts/`. `scripts/preflight.py` lints that exact source path and fails if any other Python file enters the deployable directory. No GitHub Action is included.
+`contracts/greneal.py` is the sole contract candidate. Tests, fixtures, deployment helpers, and documentation live outside `contracts/`. `scripts/preflight.py` lints that exact source path and fails if any other Python file enters the deployable directory. GitHub Actions runs the same pinned preflight on push and pull request.
+
+## v0.2 security model
+
+The boundary commits a baseline URL and SHA-256 hash. A proposal commits three immutable artefacts: payload URL/hash, evidence URL/hash, and the boundary's baseline URL/hash. Every validator fetches raw content and programmatically verifies SHA-256 before semantic interpretation. A mismatch, empty response, malformed model result, or unavailable source fails closed and leaves the proposal retryable; an LLM cannot assert payload binding.
+
+Approved changes have an open challenge window. Up to eight unique challengers can post the exact bond; one early challenge cannot use up everyone else's rights. Any open challenge makes the proposal non-actionable. After the window, a re-review either slashes the aggregate bond pool after approval or opens individual one-time refunds after a blocked/inconclusive result. A second deadline permits anyone to settle a stalled round into refunds. `is_actionable()` guarantees a change is reviewed, approved, unchallenged, past its window, and not paused/closed; downstream systems must still verify the returned resource ID and committed payload hash before execution.
+
+Deployment capacity is deliberately finite: 128 boundaries, 1,024 changes, and eight challengers per challenge round. Audit history is retained rather than deleted.
 
 ## Studionet deployment evidence
 

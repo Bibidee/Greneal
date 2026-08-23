@@ -1,4 +1,6 @@
-# Greneal v0.1.3 deployment record
+# Greneal v0.1.3 deployment record (legacy)
+
+This record applies only to the v0.1.3 code at the listed address. The repository now contains hardened v0.2.0 source with material storage and public-method changes; it has not been deployed yet. Do not represent the v0.1.3 deployment as containing v0.2 protections. A fresh Studionet deployment and fresh source-parity check are required before final submission.
 
 - Network: Studionet
 - Contract: [`0x0B33f933C664E651841270941eaF5F496c994547`](https://explorer-studio.genlayer.com/address/0x0B33f933C664E651841270941eaF5F496c994547)
