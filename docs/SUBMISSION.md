@@ -10,7 +10,7 @@
 
 **Source commit:** [`93e53d7`](https://github.com/Bibidee/Greneal/commit/93e53d7)
 
-**Source SHA-256:** `6a7d3f721dc53e7616bccb83b2450f9bee6cce8e29862787ee0cebdc2f5e26a6` (exact parity)
+**Source SHA-256:** `6a7d3f721dc53e7616bccb83b2450f9bee6cce8e29862787ee0cebdc2f5e26a6` (exact deployed/local parity)
 
 ## Fresh v0.3.0 live proof
 
@@ -26,13 +26,15 @@ Greneal is a reusable semantic change-control firewall. An owner establishes an 
 
 ## Why GenLayer consensus is necessary
 
-Whether an upgrade preserves scope, expands authority, increases economic risk, remains reversible, or preserves compatibility cannot be decided safely by hashes or keyword matching alone. Validators independently fetch hash-pinned baseline, payload, and evidence artefacts, verify SHA-256 over raw bytes, and classify those semantic dimensions. Exact agreement is required on the deciding categories; rationale is non-equivalent, and uncertainty never approves.
+Whether an upgrade preserves scope, expands authority, increases economic risk, remains reversible, or preserves compatibility cannot be decided safely by hashes or keyword matching alone. Validators independently fetch hash-pinned baseline, payload, and evidence artefacts, verify SHA-256 over exact raw bytes, and classify those semantic dimensions. Exact agreement is required on the deciding categorical fields and the deterministically derived verdict; rationale is explanatory only, and uncertainty never approves.
 
 ## Security model
 
-Authorization, storage bounds, hashes, structured-result validation, verdict derivation, challenge timing, bond accounting, settlement, replay protection, and actionability are deterministic. A valid challenge makes the proposal non-actionable and forces a public re-review lifecycle. Stalled review has a public timeout/refund route; successful approved re-review slashes the bond to the neutral sink. Downstream integrators must verify the executable payload against the returned committed payload hash.
+Authorization, storage bounds, SHA-256 commitments, structured-result validation, verdict derivation, challenge timing, bond accounting, settlement, replay protection, and actionability are deterministic. Each accepted baseline, payload, and evidence artefact is limited to 12,000 raw bytes, decoded strictly as UTF-8, and reviewed in full rather than truncated. Fetch, HTTP, empty-response, hash, size, UTF-8, and malformed-model failures fail closed: they do not approve or mutate the proposal. A valid challenge makes the proposal non-actionable and forces a public re-review lifecycle. Stalled review has a public timeout/refund route; successful approved re-review slashes the bond to the neutral sink. Downstream integrators must compute SHA-256 over the exact raw executable payload bytes and compare the resulting lowercase `0x`-prefixed digest with the committed `payload_hash` before execution.
 
-## Live proof
+## Legacy v0.2.3 supporting proof
+
+The following transactions are retained only as historical evidence for lifecycle branches that were already demonstrated on the superseded v0.2.3 deployment. They are not the canonical v0.3.0 deployment evidence above.
 
 - Safe review: [`APPROVED`, confidence 93](https://explorer-studio.genlayer.com/tx/0x25dddf5250cac60e7bf50b6a738e973035f6d39ba6223ae0804ca0aafd56f00f).
 - Risky review: [`BLOCKED`, confidence 100](https://explorer-studio.genlayer.com/tx/0x7ffe88f047807711c5ed790a4dbc593729983cdba14c76b5a89819f85219506b).
@@ -44,4 +46,4 @@ Authorization, storage bounds, hashes, structured-result validation, verdict der
 
 Release gates pass: 33 Direct Mode tests, 16 preflight invariants, GenVM lint 3/3, ABI schema generation, and exactly one deployable source.
 
-External artefact availability affects liveness; validator disagreement can prevent approval; review artefacts are bounded textual UTF-8; deployment capacity is 128 boundaries and 1,024 changes; and a custom challenge sink is a deployment-time trust choice. These constraints fail closed and are documented rather than hidden.
+External artefact availability can affect liveness and validator semantic disagreement can prevent approval or require retry; both conditions preserve fail-closed safety. Review artefacts are bounded textual UTF-8. Each deployment has finite capacity of 128 boundaries and 1,024 changes. A custom challenge sink is a deployment-time trust/configuration choice rather than a consensus property; the canonical deployment should use an appropriately neutral sink.
