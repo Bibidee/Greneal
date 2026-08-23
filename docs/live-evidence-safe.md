@@ -10,5 +10,4 @@ This evidence describes a reversible replacement of an already audited implement
 
 Exact committed payload hash:
 
-`0xabababababababababababababababababababababababababababababab`
-
+`0xabababababababababababababababababababababababababababababababab`
