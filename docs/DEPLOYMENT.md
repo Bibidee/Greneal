@@ -1,6 +1,17 @@
 # Greneal v0.1.3 deployment record (legacy)
 
-This record applies only to the v0.1.3 code at the listed address. The repository now contains hardened v0.2.1 source with material storage and public-method changes; it has not been deployed yet. Do not represent the v0.1.3 deployment as containing v0.2.1 protections. A fresh Studionet deployment and fresh source-parity check are required before final submission.
+This record applies only to the v0.1.3 code at the listed address. Do not represent that legacy deployment as containing v0.2.1 protections; the separate v0.2.1 record below is the current hardened deployment.
+
+## v0.2.1 Studionet deployment
+
+- Contract: [`0xdD3a172D1da5E7661Cf74F5ee472B3411FB2b211`](https://explorer-studio.genlayer.com/address/0xdD3a172D1da5E7661Cf74F5ee472B3411FB2b211)
+- Deployment transaction: [`0xcd33a5a10ab067de84c27216b36f110a2368b38bc15cf322ec3c50bd14a82796`](https://explorer-studio.genlayer.com/tx/0xcd33a5a10ab067de84c27216b36f110a2368b38bc15cf322ec3c50bd14a82796)
+- Source commit: [`0a5aad7`](https://github.com/Bibidee/Greneal/commit/0a5aad78a1be289266e80178d905ab3ddafd194c)
+- Local SHA-256: `5ba891d42c07f75dc87a6c307570dfcff1189ff273df04c670f74038ae887b03`
+- Retrieved deployed-source SHA-256: `5ba891d42c07f75dc87a6c307570dfcff1189ff273df04c670f74038ae887b03`
+- Parity: exact byte-for-byte match after finalized deployment.
+
+This deployment resolves the legacy-source gap. External web availability remains intentionally fail-closed and retryable: the contract cannot safely make a remote artifact permanently available, but it verifies its exact SHA-256 before every semantic review and never fabricates an approval when retrieval fails.
 
 - Network: Studionet
 - Contract: [`0x0B33f933C664E651841270941eaF5F496c994547`](https://explorer-studio.genlayer.com/address/0x0B33f933C664E651841270941eaF5F496c994547)
