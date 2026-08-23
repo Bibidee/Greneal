@@ -32,7 +32,7 @@ Deployment capacity is deliberately finite: 128 boundaries and 1,024 changes. Au
 
 ## Studionet deployment evidence
 
-The current hardened deployment is [Greneal v0.2.1 at `0xdD3a172D1da5E7661Cf74F5ee472B3411FB2b211`](https://explorer-studio.genlayer.com/address/0xdD3a172D1da5E7661Cf74F5ee472B3411FB2b211), deployed in [transaction `0xcd33a5…2796`](https://explorer-studio.genlayer.com/tx/0xcd33a5a10ab067de84c27216b36f110a2368b38bc15cf322ec3c50bd14a82796). The finalized deployed source and local v0.2.1 source have the identical SHA-256: `5ba891d42c07f75dc87a6c307570dfcff1189ff273df04c670f74038ae887b03`.
+The current hardened deployment is [Greneal v0.2.2 at `0x39a2128a55aa74753eBF0EC6f3392475E59D25B5`](https://explorer-studio.genlayer.com/address/0x39a2128a55aa74753eBF0EC6f3392475E59D25B5), deployed in [transaction `0xcd3e…ea2b`](https://explorer-studio.genlayer.com/tx/0xcd3e918e19259144f776bf3cc39b8b061792f093675e230f8f536dd6afa2ea2b). The finalized deployed source and local v0.2.2 source have the identical SHA-256: `b6b15416cec71fcf6b35ca957d910efa2e531be1f5251bb575284098ca2c3a63`.
 
 The canonical deployment is [Greneal at `0x0B33f933C664E651841270941eaF5F496c994547`](https://explorer-studio.genlayer.com/address/0x0B33f933C664E651841270941eaF5F496c994547). It was deployed from commit [`bf8712f`](https://github.com/Bibidee/Greneal/commit/bf8712f6405cb5a9e2b11de03fd16b275bb29fd0) in [deployment transaction `0x2e5ce4…3ea6f`](https://explorer-studio.genlayer.com/tx/0x2e5ce4e66969897ca86758074f1039d0a72db20d3cbe2bc1b4aaa4571043ea6f), finalized `SUCCESS` with majority agreement.
 

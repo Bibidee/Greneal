@@ -1,0 +1,1 @@
+The v0.2.2 payload replaces only a deprecated treasury reporting endpoint. It preserves every administrator, signer, owner, role, capability, permission, recipient, fee, value limit, and transfer authority. Existing callers remain compatible and the previous audited implementation remains available for rollback.

@@ -1,0 +1,1 @@
+Replace only the deprecated treasury reporting endpoint with the audited compatible endpoint. Do not change authorities, recipients, limits, fees, or asset movement.

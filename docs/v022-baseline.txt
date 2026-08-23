@@ -1,0 +1,2 @@
+Greneal v0.2.2 live baseline for treasury-upgrade.
+No administrator, signer, owner, role, capability, permission, asset recipient, value limit, fee, or transfer authority may expand. Caller interfaces must remain compatible and the prior audited implementation must remain reversible.

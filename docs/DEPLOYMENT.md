@@ -13,7 +13,16 @@ This record applies only to the v0.1.3 code at the listed address. Do not repres
 
 This deployment resolves the legacy-source gap. External web availability remains intentionally fail-closed and retryable: the contract cannot safely make a remote artifact permanently available, but it verifies its exact SHA-256 before every semantic review and never fabricates an approval when retrieval fails.
 
-The v0.2.1 deployment is superseded by v0.2.2 source because its `is_actionable()` view used `challenge_count` while `consume_change()` did not. Do not use it for final submission once v0.2.2 is deployed and parity-verified.
+The v0.2.1 deployment is superseded by v0.2.2 because its `is_actionable()` view used `challenge_count` while `consume_change()` did not.
+
+## v0.2.2 Studionet deployment (current)
+
+- Contract: [`0x39a2128a55aa74753eBF0EC6f3392475E59D25B5`](https://explorer-studio.genlayer.com/address/0x39a2128a55aa74753eBF0EC6f3392475E59D25B5)
+- Deployment transaction: [`0xcd3e918e19259144f776bf3cc39b8b061792f093675e230f8f536dd6afa2ea2b`](https://explorer-studio.genlayer.com/tx/0xcd3e918e19259144f776bf3cc39b8b061792f093675e230f8f536dd6afa2ea2b)
+- Source commit: [`57648f7`](https://github.com/Bibidee/Greneal/commit/57648f7fc8661d7cf61a22a38f2f1317b1405693)
+- Local SHA-256: `b6b15416cec71fcf6b35ca957d910efa2e531be1f5251bb575284098ca2c3a63`
+- Retrieved deployed-source SHA-256: `b6b15416cec71fcf6b35ca957d910efa2e531be1f5251bb575284098ca2c3a63`
+- Parity: exact byte-for-byte match after finalized deployment.
 
 - Network: Studionet
 - Contract: [`0x0B33f933C664E651841270941eaF5F496c994547`](https://explorer-studio.genlayer.com/address/0x0B33f933C664E651841270941eaF5F496c994547)
