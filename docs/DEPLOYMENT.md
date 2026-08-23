@@ -11,11 +11,11 @@
 
 The complete finalized transaction ledger, including approved, blocked, timeout-refund, successful re-review/slash, and expected duplicate-settlement rejection paths, is maintained in the README. All earlier deployments below are legacy.
 
-## v0.1.3 deployment record (legacy)
+## v0.1.3 deployment record (LEGACY / SUPERSEDED)
 
 This record applies only to the v0.1.3 code at the listed address. Do not represent that legacy deployment as containing later protections; v0.2.3 above is the current hardened deployment.
 
-## v0.2.1 Studionet deployment
+## v0.2.1 Studionet deployment (LEGACY / SUPERSEDED)
 
 - Contract: [`0xdD3a172D1da5E7661Cf74F5ee472B3411FB2b211`](https://explorer-studio.genlayer.com/address/0xdD3a172D1da5E7661Cf74F5ee472B3411FB2b211)
 - Deployment transaction: [`0xcd33a5a10ab067de84c27216b36f110a2368b38bc15cf322ec3c50bd14a82796`](https://explorer-studio.genlayer.com/tx/0xcd33a5a10ab067de84c27216b36f110a2368b38bc15cf322ec3c50bd14a82796)
@@ -28,7 +28,7 @@ This deployment resolves the legacy-source gap. External web availability remain
 
 The v0.2.1 deployment is superseded by v0.2.2 because its `is_actionable()` view used `challenge_count` while `consume_change()` did not.
 
-## v0.2.2 Studionet deployment (legacy)
+## v0.2.2 Studionet deployment (LEGACY / SUPERSEDED)
 
 - Contract: [`0x39a2128a55aa74753eBF0EC6f3392475E59D25B5`](https://explorer-studio.genlayer.com/address/0x39a2128a55aa74753eBF0EC6f3392475E59D25B5)
 - Deployment transaction: [`0xcd3e918e19259144f776bf3cc39b8b061792f093675e230f8f536dd6afa2ea2b`](https://explorer-studio.genlayer.com/tx/0xcd3e918e19259144f776bf3cc39b8b061792f093675e230f8f536dd6afa2ea2b)
@@ -36,6 +36,8 @@ The v0.2.1 deployment is superseded by v0.2.2 because its `is_actionable()` view
 - Local SHA-256: `b6b15416cec71fcf6b35ca957d910efa2e531be1f5251bb575284098ca2c3a63`
 - Retrieved deployed-source SHA-256: `b6b15416cec71fcf6b35ca957d910efa2e531be1f5251bb575284098ca2c3a63`
 - Parity: exact byte-for-byte match after finalized deployment.
+
+### Earlier Studionet deployment (LEGACY / SUPERSEDED)
 
 - Network: Studionet
 - Contract: [`0x0B33f933C664E651841270941eaF5F496c994547`](https://explorer-studio.genlayer.com/address/0x0B33f933C664E651841270941eaF5F496c994547)
@@ -45,7 +47,7 @@ The v0.2.1 deployment is superseded by v0.2.2 because its `is_actionable()` view
 - Local-source SHA-256: `ee5d00c9cd0322b15b8e5abd53b67b1f531fbfc5df2efc642c1cf3eb03a2b4fa`
 - Parity: exact byte-for-byte match
 
-## Finalized live transactions
+## Historical finalized live transactions (LEGACY / SUPERSEDED)
 
 | Scenario | Transaction | Outcome |
 | --- | --- | --- |
