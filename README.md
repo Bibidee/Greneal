@@ -32,7 +32,7 @@ Greneal is not a thin “AI decides X” wrapper. It separates deterministic enf
 
 The boundary commits a baseline URL and SHA-256 hash. A proposal commits payload and evidence URL/hash pairs. Every validator fetches raw bytes, checks HTTP success and non-emptiness, verifies SHA-256, enforces the explicit 12,000-byte maximum, decodes UTF-8, and presents the complete accepted text to semantic review. Nothing committed is silently truncated. Mismatch, oversize, invalid UTF-8, malformed model output, or unavailability fails closed; an LLM cannot assert payload binding.
 
-Failures are classified as `fetch_unavailable`, `bad_http_status`, `empty_response`, `hash_mismatch`, `invalid_utf8`, `artifact_too_large`, or `malformed_model_output`. External availability failures are retryable. Deterministic integrity failures and invalid semantic output never approve or mutate a proposal into approval.
+Failures are classified as `fetch_unavailable`, `bad_http_status`, `empty_response`, `hash_mismatch`, `invalid_utf8`, `artifact_too_large`, or `malformed_model_output`. External availability and provider/model failures are retryable. Integrity failures are surfaced as deterministic expected errors. Neither class can approve or mutate a proposal.
 
 ### Consensus and enforcement
 
@@ -96,8 +96,8 @@ The legacy v0.2.3 safe path became actionable only after its configured 60-secon
 
 ## Release validation
 
-- 33 Direct Mode tests passed.
-- 16 preflight invariants passed.
+- 40 Direct Mode tests passed.
+- 21 preflight invariants passed.
 - GenVM lint passed 3/3 checks on the sole deployable source.
 - ABI schema generation passed.
 - Exactly one deployable contract source exists: `contracts/greneal.py`.

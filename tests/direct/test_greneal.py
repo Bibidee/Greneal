@@ -325,3 +325,40 @@ def test_complete_accepted_artifacts_reach_semantic_prompt_without_truncation(di
     assert result["kind"] == "analysis"
     assert "MALICIOUS_TAIL" in captured["value"]
     assert bodies[1].decode("utf-8") in captured["value"]
+
+
+def test_semantic_categories_are_canonicalized_before_verdict_and_storage(direct_vm, direct_deploy):
+    contract = deploy(direct_vm, direct_deploy); create(contract); propose(direct_vm, contract)
+    mock_review(direct_vm, scope=" YES ", access="No", economic="NO", reversible="Yes", compatible=" YES ")
+    contract.review_change("change-1")
+    state = contract.get_change("change-1")
+    assert state["verdict"] == "approved"
+    assert (state["scope_preserved"], state["access_expansion"], state["compatibility"]) == ("yes", "no", "yes")
+
+
+def test_equivalence_ignores_rationale_but_rejects_each_category_disagreement(direct_vm, direct_deploy):
+    deploy(direct_vm, direct_deploy); module = direct_vm._greneal_module
+    base = {"scope_preserved": "yes", "access_expansion": "no", "economic_risk": "no", "reversibility": "yes", "compatibility": "yes", "confidence": 90, "rationale": "first"}
+    other = dict(base); other["rationale"] = "different"
+    assert module.equivalent(base, other)
+    opposites = {"scope_preserved": "no", "access_expansion": "yes", "economic_risk": "yes", "reversibility": "no", "compatibility": "no"}
+    for key, value in opposites.items():
+        changed = dict(base); changed[key] = value
+        assert not module.equivalent(base, changed)
+
+
+@pytest.mark.parametrize("failure", ["hash_mismatch", "artifact_too_large", "invalid_utf8", "empty_response"])
+def test_integrity_observation_errors_are_deterministic_and_non_mutating(failure, direct_vm, direct_deploy):
+    contract = deploy(direct_vm, direct_deploy); create(contract); propose(direct_vm, contract)
+    direct_vm._greneal_module.observe = lambda *args: {"kind": "observation_error", "class": failure}
+    with direct_vm.expect_revert("Artifact integrity failure"):
+        contract.review_change("change-1")
+    assert contract.get_change("change-1")["status"] == "proposed"
+
+
+def test_malformed_semantic_output_is_distinct_and_non_mutating(direct_vm, direct_deploy):
+    contract = deploy(direct_vm, direct_deploy); create(contract); propose(direct_vm, contract)
+    direct_vm._greneal_module.observe = lambda *args: {"kind": "observation_error", "class": "malformed_model_output"}
+    with direct_vm.expect_revert("Malformed semantic output"):
+        contract.review_change("change-1")
+    assert contract.get_change("change-1")["status"] == "proposed"

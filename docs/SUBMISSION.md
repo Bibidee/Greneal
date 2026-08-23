@@ -44,6 +44,6 @@ The following transactions are retained only as historical evidence for lifecycl
 
 ## Validation and limitations
 
-Release gates pass: 33 Direct Mode tests, 16 preflight invariants, GenVM lint 3/3, ABI schema generation, and exactly one deployable source.
+Release gates pass: 40 Direct Mode tests, 21 preflight invariants, GenVM lint 3/3, ABI schema generation, and exactly one deployable source.
 
 External artefact availability can affect liveness and validator semantic disagreement can prevent approval or require retry; both conditions preserve fail-closed safety. Review artefacts are bounded textual UTF-8. Each deployment has finite capacity of 128 boundaries and 1,024 changes. A custom challenge sink is a deployment-time trust/configuration choice rather than a consensus property; the canonical deployment should use an appropriately neutral sink.

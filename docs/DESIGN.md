@@ -35,3 +35,7 @@ A proposal can instead be blocked, inconclusive, cancelled, or challenged for on
 ## Integration
 
 Greneal is an authorization signal, not an executor. Before acting, an integrator must check `is_actionable`, verify the resource identifier, and compute SHA-256 over the exact raw payload bytes in the same representation that was committed. The resulting lowercase `0x`-prefixed 32-byte digest must equal the proposal's committed `payload_hash`. Integrators must not use `keccak256` for this comparison.
+
+## Threat model
+
+Greneal addresses lying summaries, mutable or mismatched artefacts, hidden semantic tails, unsafe scope/access/economic expansion, irreversibility, incompatibility, challenge bypass, replay, and double settlement. It mitigates but cannot eliminate prompt injection attempts, correlated validator mistakes, semantic ambiguity, temporary source outages, or later source disappearance. It does not execute payloads, prove external statements objectively true, or make URLs permanently available. Consensus is not objective truth; integrators must verify the exact SHA-256 payload commitment before execution.
