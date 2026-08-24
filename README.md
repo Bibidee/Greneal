@@ -5,10 +5,18 @@ Greneal is a standalone GenLayer semantic change-control firewall. Version 0.3.1
 | Current release | Canonical Studionet deployment |
 | --- | --- |
 | Version | `v0.3.1` |
-| Contract | [`0xFa8bfa84889c347201A6D37026A45d65429827cE`](https://explorer-studio.genlayer.com/address/0xFa8bfa84889c347201A6D37026A45d65429827cE) |
-| Deployment tx | [`0x046de466f0ba0402c6c5c4758dcb07643f26f9e48387bb3eb330cf2467bf0573`](https://explorer-studio.genlayer.com/tx/0x046de466f0ba0402c6c5c4758dcb07643f26f9e48387bb3eb330cf2467bf0573) |
-| Source commit | [`09ef7cc`](https://github.com/Bibidee/Greneal/commit/09ef7cc) |
-| Source SHA-256 | `6f6540edbd80341c0abd694c5512a2b2e4990d9ed50165798e29fc5990e467c2` (exact deployed/local parity) |
+| Contract | [`0x5807f5876771e887A3c3576a87Ca460f3F097b9c`](https://explorer-studio.genlayer.com/address/0x5807f5876771e887A3c3576a87Ca460f3F097b9c) |
+| Deployment tx | [`0x49493e40a0d08d68e25f7aed9b8e3f6256574772531dcd740d8ed7e8d3baa1aa`](https://explorer-studio.genlayer.com/tx/0x49493e40a0d08d68e25f7aed9b8e3f6256574772531dcd740d8ed7e8d3baa1aa) |
+| Source commit | [`87db74d`](https://github.com/Bibidee/Greneal/commit/87db74d) |
+| Source SHA-256 | `ca6a763bdc2f2bc331150d232f531d501053823b5d96d033f591423d1b33254a` (exact deployed/local parity) |
+
+### v0.3.1 pause-challenge proof
+
+- Safe approval: [`0x6f28…4664`](https://explorer-studio.genlayer.com/tx/0x6f28ed3350e596678cb09b26dee25b23a15e6405a96f1d245cb6d35303c84664).
+- Global pause: [`0xe904…fd58`](https://explorer-studio.genlayer.com/tx/0xe9046989cffc5e476a30bae6db8ed8a2fe165942a77d68989a885b9ec431fd58).
+- Separate challenger `0xaE82…47f7` succeeded while paused with exact bond: [`0x3aec…8453`](https://explorer-studio.genlayer.com/tx/0x3aeca7a1f628b7a498d0478c15c451abc144b16909f305b5223d4a53cbcb8453).
+- Paused public re-review approved and slashed the bond: [`0xd5a5…86e4`](https://explorer-studio.genlayer.com/tx/0xd5a564758583cf9f834fce8d116cf23d910ac9c98c9adb193667a873c12f86e4).
+- While paused actionability was false; after [unpause](https://explorer-studio.genlayer.com/tx/0xac0a09e9b56fa77b98d6ee3113349c4e98b496a84c2088fdc02fd2f5b3e5f13e), it remained false until the fresh delay.
 
 There is no frontend and no off-chain decision service. The only deployable source is `contracts/greneal.py`.
 
