@@ -2,7 +2,7 @@
 
 **Category:** GenLayer Intelligent Contracts
 
-**Current version:** v0.3.0
+**Current version:** v0.3.1
 
 **Current contract:** [`0xFa8bfa84889c347201A6D37026A45d65429827cE`](https://explorer-studio.genlayer.com/address/0xFa8bfa84889c347201A6D37026A45d65429827cE)
 

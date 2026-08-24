@@ -1,10 +1,10 @@
 # Greneal
 
-Greneal is a standalone GenLayer semantic change-control firewall. It lets a system owner register an immutable safety boundary for a governed resource, then allows maintainers to propose a change only when deterministic rules and independent GenLayer consensus agree that the change stays inside that boundary. Version 0.3.0 is the current hardened release: it preserves the v0.2.x state invariants, uses the live-compatible GenLayer web response API, and rejects oversized artefacts rather than semantically truncating committed content. Older Studionet deployments are legacy.
+Greneal is a standalone GenLayer semantic change-control firewall. Version 0.3.1 keeps protective challenges available during global pause while productive execution remains paused. The challenge deadline still expires normally; pause never freezes time.
 
 | Current release | Canonical Studionet deployment |
 | --- | --- |
-| Version | `v0.3.0` |
+| Version | `v0.3.1` |
 | Contract | [`0xFa8bfa84889c347201A6D37026A45d65429827cE`](https://explorer-studio.genlayer.com/address/0xFa8bfa84889c347201A6D37026A45d65429827cE) |
 | Deployment tx | [`0x046de466f0ba0402c6c5c4758dcb07643f26f9e48387bb3eb330cf2467bf0573`](https://explorer-studio.genlayer.com/tx/0x046de466f0ba0402c6c5c4758dcb07643f26f9e48387bb3eb330cf2467bf0573) |
 | Source commit | [`09ef7cc`](https://github.com/Bibidee/Greneal/commit/09ef7cc) |
@@ -96,7 +96,7 @@ The legacy v0.2.3 safe path became actionable only after its configured 60-secon
 
 ## Release validation
 
-- 40 Direct Mode tests passed.
+- 43 Direct Mode tests passed.
 - 21 preflight invariants passed.
 - GenVM lint passed 3/3 checks on the sole deployable source.
 - ABI schema generation passed.

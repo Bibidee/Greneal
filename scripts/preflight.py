@@ -17,7 +17,7 @@ required = [
     "class Greneal", "run_nondet_unsafe", "equivalent", "valid_analysis",
     "settle_expired_challenge", "withdraw_challenge_bond", "challenge_bond_held", "challenged_at",
     "is_actionable", "payload_binding", "MIN_CONFIDENCE = 75", "challenge_sink", "def nonzero_address", "def canonical_hash(value)", "def fetch_verified", "hashlib.sha256",
-    "MAX_ARTIFACT_BYTES = 12000", "artifact_too_large", "hash_mismatch", "def canonical_analysis", '"version": "0.3.0"',
+    "MAX_ARTIFACT_BYTES = 12000", "artifact_too_large", "hash_mismatch", "def canonical_analysis", '"version": "0.3.1"',
 ]
 missing = [item for item in required if item not in source]
 if missing:

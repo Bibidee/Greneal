@@ -267,6 +267,40 @@ def test_challenge_timing_blocks_early_review_and_owner_cancellation(direct_vm, 
         contract.withdraw_challenge_bond("change-1")
 
 
+def test_challenge_remains_available_during_global_pause(direct_vm, direct_deploy, direct_alice):
+    contract = deploy(direct_vm, direct_deploy); create(contract); propose(direct_vm, contract); mock_review(direct_vm); contract.review_change("change-1")
+    contract.set_paused(True)
+    assert not contract.is_actionable("change-1")["actionable"]
+    direct_vm.value = BOND
+    with direct_vm.prank(direct_alice): contract.challenge_change("change-1")
+    direct_vm.value = 0
+    state = contract.get_change("change-1")
+    assert state["status"] == "challenged" and state["verdict"] == ""
+    assert state["challenge_count"] == 1 and int(state["challenge_bond_held"]) == BOND
+    assert not contract.is_actionable("change-1")["actionable"]
+
+
+def test_pause_does_not_extend_expired_challenge_window(direct_vm, direct_deploy):
+    contract = deploy(direct_vm, direct_deploy); create(contract); propose(direct_vm, contract); mock_review(direct_vm); contract.review_change("change-1")
+    contract.set_paused(True); warp_to(direct_vm, "2026-08-23T08:01:01Z"); direct_vm.value = BOND
+    with direct_vm.expect_revert("Challenge window closed"): contract.challenge_change("change-1")
+    direct_vm.value = 0
+
+
+def test_paused_challenge_rereview_preserves_fresh_delay(direct_vm, direct_deploy, direct_alice):
+    contract = deploy(direct_vm, direct_deploy); create(contract); propose(direct_vm, contract); mock_review(direct_vm); contract.review_change("change-1")
+    contract.set_paused(True); direct_vm.value = BOND
+    with direct_vm.prank(direct_alice): contract.challenge_change("change-1")
+    direct_vm.value = 0; warp_to(direct_vm, "2026-08-23T08:01:01Z"); mock_review(direct_vm); contract.review_change("change-1")
+    state = contract.get_change("change-1")
+    assert state["verdict"] == "approved" and int(state["challenge_bond_held"]) == 0
+    assert not contract.is_actionable("change-1")["actionable"]
+    contract.set_paused(False)
+    assert not contract.is_actionable("change-1")["actionable"]
+    warp_to(direct_vm, "2026-08-23T08:02:02Z")
+    assert contract.is_actionable("change-1")["actionable"]
+
+
 def test_raw_hashing_preserves_non_utf8_integrity_input(direct_vm, direct_deploy):
     contract = deploy(direct_vm, direct_deploy)
     module = direct_vm._greneal_module

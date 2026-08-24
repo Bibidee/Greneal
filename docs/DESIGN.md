@@ -1,12 +1,14 @@
 # Greneal design
 
-## v0.3.0 hardening model
+## v0.3.1 hardening model
 
 Each baseline, payload, and evidence response is hashed over exact raw bytes, limited to 12,000 bytes, decoded strictly as UTF-8, and then presented in full to semantic review. Oversized input is rejected rather than truncated, eliminating any committed but semantically hidden tail.
 
 Authorization and state transitions are deterministic. Only independently fetched, hash-verified artefacts and semantic safety classification enter GenLayer consensus. A boundary commits a HTTPS baseline URL and SHA-256 hash; a proposal commits payload URL/hash and evidence URL/hash. Validators fetch raw bytes with `gl.nondet.web.get`, SHA-256 the exact bytes, and fail closed if any commitment differs before decoding verified UTF-8 text. The LLM receives the verified payload, baseline, and evidence; it never decides payload binding. Binary/non-UTF-8 artefacts are intentionally unsupported and fail closed without approving or mutating the proposal.
 
 ### Challenge lifecycle
+
+Global pause blocks productive operations and actionability but cannot suppress a protective challenge against an already reviewed/approved proposal. The original challenge deadline continues to expire normally; pause does not extend or freeze it.
 
 `reviewed/approved` changes accept one exact triggering bond. That first challenge changes state to `challenged` immediately and forces the proposal through a public re-review round; additional people need no participant slot to obtain protection because no proposal can bypass the round. Re-review is callable by anyone only after the original window closes. An approved re-review records a fresh `reviewed_at`, enforces a fresh finalization delay, and transfers the bond exactly once to the deployment's neutral challenge sink—not to the maintainer. Blocked/inconclusive re-review opens one exact refund claim for the triggering challenger. If nobody completes re-review by the second deadline, anyone can settle to the same refund state. Pause and closure never prevent settlement or withdrawal; the held value is zeroed before transfer so it cannot be paid twice.
 
