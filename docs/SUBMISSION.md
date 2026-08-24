@@ -44,7 +44,7 @@ Authorization, storage bounds, SHA-256 commitments, structured-result validation
 
 ## Legacy v0.2.3 supporting proof
 
-The following transactions are retained only as historical evidence for lifecycle branches that were already demonstrated on the superseded v0.2.3 deployment. They are not the canonical v0.3.0 deployment evidence above.
+The following transactions are retained only as historical evidence for lifecycle branches that were already demonstrated on the superseded v0.2.3 deployment. They are not the canonical v0.3.1 deployment evidence above.
 
 - Safe review: [`APPROVED`, confidence 93](https://explorer-studio.genlayer.com/tx/0x25dddf5250cac60e7bf50b6a738e973035f6d39ba6223ae0804ca0aafd56f00f).
 - Risky review: [`BLOCKED`, confidence 100](https://explorer-studio.genlayer.com/tx/0x7ffe88f047807711c5ed790a4dbc593729983cdba14c76b5a89819f85219506b).
@@ -54,6 +54,6 @@ The following transactions are retained only as historical evidence for lifecycl
 
 ## Validation and limitations
 
-Release gates pass: 40 Direct Mode tests, 21 preflight invariants, GenVM lint 3/3, ABI schema generation, and exactly one deployable source.
+Release gates pass: 43 Direct Mode tests, 21 preflight invariants, GenVM lint 3/3, ABI schema generation, and exactly one deployable source.
 
 External artefact availability can affect liveness and validator semantic disagreement can prevent approval or require retry; both conditions preserve fail-closed safety. Review artefacts are bounded textual UTF-8. Each deployment has finite capacity of 128 boundaries and 1,024 changes. A custom challenge sink is a deployment-time trust/configuration choice rather than a consensus property; the canonical deployment should use an appropriately neutral sink.
